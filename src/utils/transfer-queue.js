@@ -9,4 +9,9 @@ function lastVisibleIncrease() {
     lastVisibleIndex++;
 }
 
-export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease };
+function resetIncrease() {
+    transferIndex = 0;
+    lastVisibleIndex = 0;
+}
+
+export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease };

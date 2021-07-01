@@ -1674,6 +1674,38 @@ exports.default = _assign2.default || function (target) {
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var transferIndex = 0;
+var lastVisibleIndex = 0;
+
+function transferIncrease() {
+    exports.transferIndex = transferIndex += 1;
+}
+
+function lastVisibleIncrease() {
+    exports.lastVisibleIndex = lastVisibleIndex += 1;
+}
+
+function resetIncrease() {
+    exports.transferIndex = transferIndex = 0;
+    exports.lastVisibleIndex = lastVisibleIndex = 0;
+}
+
+exports.transferIndex = transferIndex;
+exports.transferIncrease = transferIncrease;
+exports.lastVisibleIndex = lastVisibleIndex;
+exports.lastVisibleIncrease = lastVisibleIncrease;
+exports.resetIncrease = resetIncrease;
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = __webpack_require__(64);
 var defined = __webpack_require__(63);
@@ -1683,14 +1715,14 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1714,7 +1746,7 @@ __webpack_require__(72)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1751,32 +1783,6 @@ var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_
 
 /* harmony default export */ __webpack_exports__["default"] = (Component.exports);
 
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var transferIndex = 0;
-var lastVisibleIndex = 0;
-
-function transferIncrease() {
-    exports.transferIndex = transferIndex += 1;
-}
-
-function lastVisibleIncrease() {
-    exports.lastVisibleIndex = lastVisibleIndex += 1;
-}
-
-exports.transferIndex = transferIndex;
-exports.transferIncrease = transferIncrease;
-exports.lastVisibleIndex = lastVisibleIndex;
-exports.lastVisibleIncrease = lastVisibleIncrease;
 
 /***/ }),
 /* 38 */
@@ -2035,7 +2041,7 @@ module.exports = { "default": __webpack_require__(277), __esModule: true };
 __webpack_require__(278);
 var global = __webpack_require__(9);
 var hide = __webpack_require__(25);
-var Iterators = __webpack_require__(34);
+var Iterators = __webpack_require__(35);
 var TO_STRING_TAG = __webpack_require__(10)('toStringTag');
 
 var DOMIterables = ('CSSRuleList,CSSStyleDeclaration,CSSValueList,ClientRectList,DOMRectList,DOMStringList,' +
@@ -2743,7 +2749,7 @@ var LIBRARY = __webpack_require__(42);
 var $export = __webpack_require__(7);
 var redefine = __webpack_require__(103);
 var hide = __webpack_require__(25);
-var Iterators = __webpack_require__(34);
+var Iterators = __webpack_require__(35);
 var $iterCreate = __webpack_require__(280);
 var setToStringTag = __webpack_require__(47);
 var getPrototypeOf = __webpack_require__(106);
@@ -2815,7 +2821,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 
 var classof = __webpack_require__(56);
 var ITERATOR = __webpack_require__(10)('iterator');
-var Iterators = __webpack_require__(34);
+var Iterators = __webpack_require__(35);
 module.exports = __webpack_require__(5).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -4120,7 +4126,7 @@ exports.default = {
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(30);
-var toIObject = __webpack_require__(33);
+var toIObject = __webpack_require__(34);
 var arrayIndexOf = __webpack_require__(263)(false);
 var IE_PROTO = __webpack_require__(66)('IE_PROTO');
 
@@ -5093,7 +5099,7 @@ var _newArrowCheck2 = __webpack_require__(1);
 
 var _newArrowCheck3 = _interopRequireDefault(_newArrowCheck2);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -6149,7 +6155,7 @@ module.exports = function (iterator, fn, value, entries) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(34);
+var Iterators = __webpack_require__(35);
 var ITERATOR = __webpack_require__(10)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -6207,7 +6213,7 @@ var _vue2 = _interopRequireDefault(_vue);
 
 var _assist = __webpack_require__(3);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11121,7 +11127,7 @@ var _input = __webpack_require__(38);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -12679,7 +12685,7 @@ var _transferDom = __webpack_require__(23);
 
 var _transferDom2 = _interopRequireDefault(_transferDom);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -14874,7 +14880,7 @@ var _input = __webpack_require__(38);
 
 var _input2 = _interopRequireDefault(_input);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -18084,7 +18090,7 @@ var _defineProperty2 = __webpack_require__(2);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -21192,7 +21198,7 @@ var _defineProperty2 = __webpack_require__(2);
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _dropdown = __webpack_require__(36);
+var _dropdown = __webpack_require__(37);
 
 var _dropdown2 = _interopRequireDefault(_dropdown);
 
@@ -21465,7 +21471,7 @@ var _notice2 = __webpack_require__(501);
 
 var _notice3 = _interopRequireDefault(_notice2);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21801,7 +21807,7 @@ var _dom = __webpack_require__(12);
 
 var _assist = __webpack_require__(3);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22662,7 +22668,7 @@ var _transferDom2 = _interopRequireDefault(_transferDom);
 
 var _assist = __webpack_require__(3);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 var _locale = __webpack_require__(6);
 
@@ -24226,7 +24232,7 @@ var _transferDom2 = _interopRequireDefault(_transferDom);
 
 var _assist = __webpack_require__(3);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31024,7 +31030,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.6.1-1',
+    version: '4.6.1-2',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -31070,7 +31076,7 @@ __webpack_require__(97)('keys', function () {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(33);
+var toIObject = __webpack_require__(34);
 var toLength = __webpack_require__(52);
 var toAbsoluteIndex = __webpack_require__(264);
 module.exports = function (IS_INCLUDES) {
@@ -31350,7 +31356,7 @@ exports.staticRenderFns = staticRenderFns;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(46);
-__webpack_require__(35);
+__webpack_require__(36);
 module.exports = __webpack_require__(282);
 
 
@@ -31362,8 +31368,8 @@ module.exports = __webpack_require__(282);
 
 var addToUnscopables = __webpack_require__(279);
 var step = __webpack_require__(102);
-var Iterators = __webpack_require__(34);
-var toIObject = __webpack_require__(33);
+var Iterators = __webpack_require__(35);
+var toIObject = __webpack_require__(34);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -31700,7 +31706,7 @@ module.exports = { "default": __webpack_require__(293), __esModule: true };
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(46);
-__webpack_require__(35);
+__webpack_require__(36);
 module.exports = __webpack_require__(294);
 
 
@@ -31710,7 +31716,7 @@ module.exports = __webpack_require__(294);
 
 var classof = __webpack_require__(56);
 var ITERATOR = __webpack_require__(10)('iterator');
-var Iterators = __webpack_require__(34);
+var Iterators = __webpack_require__(35);
 module.exports = __webpack_require__(5).isIterable = function (it) {
   var O = Object(it);
   return O[ITERATOR] !== undefined
@@ -31758,7 +31764,7 @@ module.exports = function stringify(it) { // eslint-disable-line no-unused-vars
 /* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(35);
+__webpack_require__(36);
 __webpack_require__(299);
 module.exports = __webpack_require__(5).Array.from;
 
@@ -31849,7 +31855,7 @@ module.exports = { "default": __webpack_require__(303), __esModule: true };
 /* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(35);
+__webpack_require__(36);
 __webpack_require__(46);
 module.exports = __webpack_require__(77).f('iterator');
 
@@ -31896,7 +31902,7 @@ var isArray = __webpack_require__(118);
 var anObject = __webpack_require__(22);
 var isObject = __webpack_require__(18);
 var toObject = __webpack_require__(29);
-var toIObject = __webpack_require__(33);
+var toIObject = __webpack_require__(34);
 var toPrimitive = __webpack_require__(70);
 var createDesc = __webpack_require__(44);
 var _create = __webpack_require__(55);
@@ -32150,7 +32156,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(33);
+var toIObject = __webpack_require__(34);
 var gOPN = __webpack_require__(119).f;
 var toString = {}.toString;
 
@@ -32176,7 +32182,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 var pIE = __webpack_require__(54);
 var createDesc = __webpack_require__(44);
-var toIObject = __webpack_require__(33);
+var toIObject = __webpack_require__(34);
 var toPrimitive = __webpack_require__(70);
 var has = __webpack_require__(30);
 var IE8_DOM_DEFINE = __webpack_require__(98);
@@ -36345,7 +36351,7 @@ var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(80);
-__webpack_require__(35);
+__webpack_require__(36);
 __webpack_require__(46);
 __webpack_require__(442);
 __webpack_require__(446);
@@ -40537,6 +40543,8 @@ var _confirm = __webpack_require__(505);
 
 var _confirm2 = _interopRequireDefault(_confirm);
 
+var _transferQueue = __webpack_require__(33);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var modalInstance = void 0;
@@ -40606,6 +40614,10 @@ _confirm2.default.confirm = function () {
     props.icon = 'confirm';
     props.showCancel = true;
     return confirm(props);
+};
+
+_confirm2.default.resetIndex = function () {
+    (0, _transferQueue.resetIncrease)();
 };
 
 _confirm2.default.remove = function () {
@@ -43255,7 +43267,7 @@ var _spin = __webpack_require__(91);
 
 var _spin2 = _interopRequireDefault(_spin);
 
-var _transferQueue = __webpack_require__(37);
+var _transferQueue = __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43614,7 +43626,7 @@ module.exports = { "default": __webpack_require__(555), __esModule: true };
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(80);
-__webpack_require__(35);
+__webpack_require__(36);
 __webpack_require__(46);
 __webpack_require__(556);
 __webpack_require__(562);

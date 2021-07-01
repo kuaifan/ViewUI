@@ -1,4 +1,5 @@
 import Modal from './confirm';
+import { resetIncrease } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -54,6 +55,10 @@ Modal.confirm = function (props = {}) {
     props.icon = 'confirm';
     props.showCancel = true;
     return confirm(props);
+};
+
+Modal.resetIndex = function () {
+    resetIncrease();
 };
 
 Modal.remove = function () {
