@@ -39,7 +39,7 @@
         </div>
         <div :class="contentClasses" :style="contentStyle" ref="panes"><slot></slot></div>
         <div class="ivu-tabs-context-menu" :style="contextMenuStyles">
-            <Dropdown trigger="custom" :class="[contextMenuClassName]" :visible="contextMenuVisible" transfer @on-clickoutside="handleClickContextMenuOutside">
+            <Dropdown trigger="custom" :transfer-class-name="contextMenuClassName" :visible="contextMenuVisible" transfer @on-clickoutside="handleClickContextMenuOutside">
                 <DropdownMenu slot="list">
                     <slot name="contextMenu"></slot>
                 </DropdownMenu>
