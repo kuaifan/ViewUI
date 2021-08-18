@@ -238,7 +238,7 @@
                 this.$emit('on-input-focus');
             },
             onInputBlur () {
-                if (this.allowCreate && this.query !== '') {
+                if (this.allowCreate && this.query !== '' && this.$parent.flatOptions.length == 0) {
                     this.handleInputEnter();
                     return;
                 }
