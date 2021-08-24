@@ -646,7 +646,9 @@
             onClickOutside(event){
                 if (this.visible) {
                     if (event.type === 'mousedown') {
-                        event.preventDefault();
+                        if (this.clickOutStopPropagation) {
+                            event.preventDefault();
+                        }
                         return;
                     }
 
@@ -667,10 +669,10 @@
                         });
                     }
 
-                    if (!this.autoComplete && this.clickOutStopPropagation) {
-                        event.stopPropagation();
+                    if (this.clickOutStopPropagation) {
+                        !this.autoComplete && event.stopPropagation();
+                        event.preventDefault();
                     }
-                    event.preventDefault();
                     this.hideMenu();
                     this.isFocused = true;
                     this.$emit('on-clickoutside', event);
