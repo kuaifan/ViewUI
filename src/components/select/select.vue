@@ -269,6 +269,12 @@
                 type: Boolean,
                 default: false
             },
+            // 4.6.1-7
+            // click-out-stop-propagation在打开下来时阻止点击外框事件
+            clickOutStopPropagation: {
+                type: Boolean,
+                default: true
+            },
             name: {
                 type: String
             },
@@ -661,7 +667,9 @@
                         });
                     }
 
-                    if (!this.autoComplete) event.stopPropagation();
+                    if (!this.autoComplete && this.clickOutStopPropagation) {
+                        event.stopPropagation();
+                    }
                     event.preventDefault();
                     this.hideMenu();
                     this.isFocused = true;
