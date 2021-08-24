@@ -539,6 +539,9 @@
             }
         },
         methods: {
+            isJson(obj) {
+                return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && typeof obj.length == "undefined";
+            },
             inUncancelable(value) {
                 if (this.multipleUncancelable.length === 0) {
                     return false;
@@ -565,6 +568,11 @@
                 if (this.clearable) this.reset();
             },
             getOptionData(value){
+                if (this.isJson(value)) {
+                    if (value.__create === true || this.remote) {
+                        return value;
+                    }
+                }
                 const option = this.flatOptions.find(({componentOptions}) => componentOptions.propsData.value === value);
                 if (!option) return null;
                 const label = getOptionLabel(option);
