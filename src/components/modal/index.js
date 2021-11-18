@@ -3,12 +3,13 @@ import { resetIncrease } from '../../utils/transfer-queue';
 
 let modalInstance;
 
-function getModalInstance (render = undefined, lockScroll = true) {
+function getModalInstance (render = undefined, lockScroll = true, append = undefined) {
     modalInstance = modalInstance || Modal.newInstance({
         closable: false,
         maskClosable: false,
         footerHide: true,
         render: render,
+        append: append,
         lockScroll
     });
 
@@ -18,7 +19,8 @@ function getModalInstance (render = undefined, lockScroll = true) {
 function confirm (options) {
     const render = ('render' in options) ? options.render : undefined;
     const lockScroll = ('lockScroll' in options) ? options.lockScroll : true;
-    let instance  = getModalInstance(render, lockScroll);
+    const append = ('append' in options) ? options.append : undefined;
+    let instance  = getModalInstance(render, lockScroll, append);
 
     options.onRemove = function () {
         modalInstance = null;

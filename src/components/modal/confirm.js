@@ -182,7 +182,13 @@ Modal.newInstance = properties => {
             },
             destroy () {
                 this.$destroy();
-                if (this.$el) document.body.removeChild(this.$el);
+                if (this.$el) {
+                    if (this.append && typeof this.append === 'object') {
+                        this.append.removeChild(this.$el);
+                    } else {
+                        document.body.removeChild(this.$el);
+                    }
+                }
                 this.onRemove();
             },
             onOk () {},
@@ -192,7 +198,11 @@ Modal.newInstance = properties => {
     });
 
     const component = Instance.$mount();
-    document.body.appendChild(component.$el);
+    if (_props.append && typeof _props.append === 'object') {
+        _props.append.appendChild(component.$el);
+    } else {
+        document.body.appendChild(component.$el);
+    }
     const modal = Instance.$children[0];
 
     return {
