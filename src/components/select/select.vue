@@ -124,7 +124,7 @@
 
     const findOptionsInVNode = (node) => {
         const opts = node.componentOptions;
-        if (opts && opts.tag.match(optionRegexp)) return [node];
+        if (opts && optionRegexp.test(opts.tag)) return [node];
         if (!node.children && (!opts || !opts.children)) return [];
         const children = [...(node.children || []), ...(opts && opts.children || [])];
         const options = children.reduce(
@@ -496,7 +496,7 @@
 
                     const cOptions = option.componentOptions;
                     if (!cOptions) continue;
-                    if (cOptions.tag.match(optionGroupRegexp)){
+                    if (optionGroupRegexp.test(cOptions.tag)){
                         let children = cOptions.children;
 
                         // remove filtered children
@@ -744,6 +744,7 @@
             },
             navigateOptions(direction){
                 const optionsLength = this.flatOptions.length - 1;
+                if (optionsLength < 0) return;
 
                 let index = this.focusIndex + direction;
                 if (index < 0) index = optionsLength;
@@ -857,12 +858,8 @@
                             tag: undefined,
                             __create: true
                         };
-                        if (this.multiple) {
-                            this.onOptionClick(option);
-                        } else {
-                            // 单选时如果不在 nextTick 里执行，无法赋值
-                            this.$nextTick(() => this.onOptionClick(option));
-                        }
+                        // 单选（和多选，#926）时如果不在 nextTick 里执行，无法赋值
+                        this.$nextTick(() => this.onOptionClick(option));
                     } else {
                         const $options = findComponentsDownward(this, 'iOption');
                         if ($options && $options.length > 0) {
@@ -899,7 +896,7 @@
                 //     (this.multiple ? this.publicValue.map(({value}) => value) : this.publicValue.value) :
                 //     this.publicValue;
                 // 改变 labelInValue 的实现：直接在 emit 时改数据
-                const vModelValue = this.publicValue;
+                let vModelValue = this.publicValue;
                 const shouldEmitInput = newValue !== oldValue && vModelValue !== this.value;
                 if (shouldEmitInput) {
                     let emitValue = this.publicValue;
@@ -910,6 +907,11 @@
                             emitValue = this.values[0];
                         }
                     }
+
+                    // Form 重置时，如果初始值是 null，也置为 null，而不是 []
+                    if (Array.isArray(vModelValue) && !vModelValue.length && this.value === null) vModelValue = null;
+                    else if (vModelValue === undefined && this.value === null) vModelValue = null;
+
                     this.$emit('input', vModelValue); // to update v-model
                     this.$emit('on-change', emitValue);
                     this.dispatch('FormItem', 'on-form-change', emitValue);
