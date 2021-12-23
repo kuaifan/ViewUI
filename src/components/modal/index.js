@@ -1,5 +1,5 @@
 import Modal from './confirm';
-import { resetIncrease } from '../../utils/transfer-queue';
+import { resetIncrease, modalVisibleAggregate } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -59,10 +59,6 @@ Modal.confirm = function (props = {}) {
     return confirm(props);
 };
 
-Modal.resetIndex = function () {
-    resetIncrease();
-};
-
 Modal.remove = function () {
     if (!modalInstance) {   // at loading status, remove after Cancel
         return false;
@@ -71,6 +67,18 @@ Modal.remove = function () {
     const instance = getModalInstance();
 
     instance.remove();
+};
+
+Modal.resetIndex = function () {
+    resetIncrease();
+};
+
+Modal.removeLast = function () {
+    if (modalVisibleAggregate.length === 0) {
+        return false;
+    }
+    modalVisibleAggregate[modalVisibleAggregate.length - 1].close();
+    return true;
 };
 
 export default Modal;

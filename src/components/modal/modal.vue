@@ -40,7 +40,7 @@
     import { on, off } from '../../utils/dom';
     import { findComponentsDownward, deepCopy } from '../../utils/assist';
 
-    import { transferIndex as modalIndex, transferIncrease as modalIncrease, lastVisibleIndex, lastVisibleIncrease } from '../../utils/transfer-queue';
+    import { transferIndex as modalIndex, transferIncrease as modalIncrease, lastVisibleIndex, lastVisibleIncrease, modalVisibleAggregate } from '../../utils/transfer-queue';
 
     const prefixCls = 'ivu-modal';
 
@@ -417,6 +417,19 @@
                 this.visible = val;
             },
             visible (val) {
+                if (this._uid) {
+                    const index =  modalVisibleAggregate.findIndex(({_uid}) => _uid === this._uid);
+                    if (val && index === -1) {
+                        modalVisibleAggregate.push({
+                            _uid: this._uid,
+                            close: this.close
+                        });
+                    }
+                    if (!val && index > -1) {
+                        modalVisibleAggregate.splice(index, 1);
+                    }
+                }
+                //
                 if (val === false) {
                     this.buttonLoading = false;
                     this.timer = setTimeout(() => {

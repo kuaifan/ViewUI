@@ -1,5 +1,6 @@
 let transferIndex = 0;
 let lastVisibleIndex = 0;
+let modalVisibleAggregate = [];
 
 function transferIncrease() {
     transferIndex++;
@@ -14,4 +15,4 @@ function resetIncrease() {
     lastVisibleIndex = 0;
 }
 
-export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease };
+export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate };
