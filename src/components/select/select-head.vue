@@ -261,8 +261,10 @@
                     this.removeTag(this.selectedMultiple[this.selectedMultiple.length - 1]);
                 }
             },
-            handleInputEnter () {
+            handleInputEnter (e) {
                 this.$emit('on-enter');
+                // #926
+                if (this.showCreateItem) e.stopPropagation();
             },
             onHeaderClick(e){
                 if (this.filterable && e.target === this.$el){

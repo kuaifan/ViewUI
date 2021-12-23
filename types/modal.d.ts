@@ -158,6 +158,14 @@ export declare class ModalInstance extends Modal {
      * 移除
      */
     remove(): void;
+    /**
+     * 重置z-index
+     */
+    resetIndex(): void;
+    /**
+     * 移除最上层Modal
+     */
+    removeLast(): boolean;
 }
 
 export declare class ModalConfig {
