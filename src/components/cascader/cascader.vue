@@ -225,7 +225,7 @@
                     for (let i = 0; i < arr.length; i++) {
                         let item = arr[i];
                         item.__label = label ? label + ' / ' + item.label : item.label;
-                        item.__value = value ? value + ',' + item.value : item.value;
+                        item.__value = value ? value.concat(item.value) : [item.value];
 
                         if (item.children && item.children.length) {
                             getSelections(item.children, item.__label, item.__value);
@@ -352,7 +352,7 @@
                 this.query = '';
                 this.$refs.input.currentValue = '';
                 const oldVal = JSON.stringify(this.currentValue);
-                this.currentValue = item.value.split(',');
+                this.currentValue = item.value;
                 // use setTimeout for #4786, can not use nextTick, because @on-find-selected use nextTick
                 setTimeout(() => {
                     this.emitValue(this.currentValue, oldVal);
