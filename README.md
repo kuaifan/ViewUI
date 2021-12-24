@@ -22,7 +22,12 @@ yarn publish
 docker run -itd -v $(pwd):/view --name node-view node:11.15.0
 docker exec -it -w /view node-view /bin/bash
 yarn publish
+
 ```
+
+自用主色调
+
+`src/styles/custom.less` 中 `#2d8cf0` 改成 `#8bcf70`
 
 ## 注意
 
