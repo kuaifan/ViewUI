@@ -14,6 +14,10 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 # 4 space indentation
+[*.yml]
+indent_size = 2
+
+# 4 space indentation
 [*.py]
 indent_size = 4
 

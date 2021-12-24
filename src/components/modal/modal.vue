@@ -40,7 +40,14 @@
     import { on, off } from '../../utils/dom';
     import { findComponentsDownward, deepCopy } from '../../utils/assist';
 
-    import { transferIndex as modalIndex, transferIncrease as modalIncrease, lastVisibleIndex, lastVisibleIncrease, modalVisibleAggregate } from '../../utils/transfer-queue';
+    import {
+        transferIndex as modalIndex,
+        transferIncrease as modalIncrease,
+        lastVisibleIndex,
+        lastVisibleIncrease,
+        modalVisibleAggregate,
+        resetIncrease
+    } from '../../utils/transfer-queue';
 
     const prefixCls = 'ivu-modal';
 
@@ -443,6 +450,9 @@
                     }
                     if (!val && index > -1) {
                         modalVisibleAggregate.splice(index, 1);
+                    }
+                    if (modalVisibleAggregate.length == 0) {
+                        resetIncrease()
                     }
                 }
                 //
