@@ -59,6 +59,8 @@
             handleTriggerItem (item, fromInit = false, fromUser = false) {
                 if (item.disabled) return;
 
+                this.dispatch('Cascader', 'on-result-item', item);
+
                 const cascader = findComponentUpward(this, 'Cascader');
                 if (item.loading !== undefined && !item.children.length) {
                     if (cascader && cascader.loadData) {

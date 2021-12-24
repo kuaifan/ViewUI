@@ -443,6 +443,9 @@
                 this.currentValue = val || [];
                 if (val === null || !val.length) this.selected = [];
             },
+            query (val) {
+                this.$emit('on-input-change', val);
+            },
             currentValue () {
                 if (this.isValueNull) {
                     this.isValueNull = false;
