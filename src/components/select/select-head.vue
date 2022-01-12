@@ -264,7 +264,13 @@
             handleInputEnter (e) {
                 this.$emit('on-enter');
                 // #926
-                if (this.showCreateItem) e.stopPropagation();
+                if (this.showCreateItem) {
+                    try {
+                        e.stopPropagation();
+                    } catch (err) {
+                        //
+                    }
+                }
             },
             onHeaderClick(e){
                 if (this.filterable && e.target === this.$el){
