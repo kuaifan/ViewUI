@@ -163,6 +163,10 @@ export declare class ModalInstance extends Modal {
      */
     resetIndex(): void;
     /**
+     * 可见列表
+     */
+    visibles(): Array<this>;
+    /**
      * 移除最上层Modal
      */
     removeLast(): boolean;

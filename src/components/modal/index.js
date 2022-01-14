@@ -73,6 +73,10 @@ Modal.resetIndex = function () {
     resetIncrease();
 };
 
+Modal.visibles = function () {
+    return modalVisibleAggregate;
+};
+
 Modal.removeLast = function () {
     if (modalVisibleAggregate.length === 0) {
         return false;
