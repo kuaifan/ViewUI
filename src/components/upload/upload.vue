@@ -171,6 +171,10 @@
 
         },
         methods: {
+            isJson(obj) {
+                return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && typeof obj.length == "undefined";
+            },
+
             handleClick () {
                 if (this.itemDisabled) return;
                 this.$refs.input.click();
@@ -250,11 +254,19 @@
                 let formData = new FormData();
                 formData.append(this.name, file);
 
+                let dataJson = Object.assign({}, this.data);
+                if (this.webkitdirectory) {
+                    if (!this.isJson(dataJson)) {
+                        dataJson = {};
+                    }
+                    dataJson.webkitRelativePath = file.webkitRelativePath;
+                }
+
                 ajax({
                     headers: this.headers,
                     withCredentials: this.withCredentials,
                     file: file,
-                    data: this.data,
+                    data: dataJson,
                     filename: this.name,
                     action: this.action,
                     onProgress: e => {
