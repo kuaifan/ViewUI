@@ -81,8 +81,15 @@ Modal.removeLast = function () {
     if (modalVisibleAggregate.length === 0) {
         return false;
     }
-    modalVisibleAggregate[modalVisibleAggregate.length - 1].close();
-    return true;
+    const $TopModal = modalVisibleAggregate.sort((a, b) => {
+        return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
+    })[0];
+    if ($TopModal) {
+        $TopModal.close();
+        return true;
+    } else {
+        return false;
+    }
 };
 
 export default Modal;

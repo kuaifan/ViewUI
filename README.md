@@ -27,9 +27,9 @@ yarn publish
 
 自用主色调
 
-`src/styles/custom.less` 中 `#2d8cf0` 改成 `#8bcf70`
-`src/styles/custom.less` 中 `#17233d` 改成 `#303133
-`src/styles/custom.less` 中 `#515a6e` 改成 `#606266
+- `src/styles/custom.less` 中 `#2d8cf0` 改成 `#8bcf70`
+- `src/styles/custom.less` 中 `#17233d` 改成 `#303133`
+- `src/styles/custom.less` 中 `#515a6e` 改成 `#606266`
 
 ## 注意
 
