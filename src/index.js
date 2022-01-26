@@ -223,7 +223,8 @@ const install = function(Vue, opts = {}) {
             closeIconSize: opts.tabs ? opts.tabs.closeIconSize ? opts.tabs.closeIconSize : '' : ''
         },
         modal: {
-            maskClosable: opts.modal ? 'maskClosable' in opts.modal ? opts.modal.maskClosable : '' : ''
+            maskClosable: opts.modal ? 'maskClosable' in opts.modal ? opts.modal.maskClosable : '' : '',
+            checkEscClose: opts.modal ? 'checkEscClose' in opts.modal ? opts.modal.checkEscClose : '' : ''
         }
     };
 

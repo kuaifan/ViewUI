@@ -170,6 +170,7 @@
                 dragData: deepCopy(dragData),
                 modalIndex: this.handleGetModalIndex(),  // for Esc close the top modal
                 isMouseTriggerIn: false, // #5800
+                contentShake: false,
             };
         },
         computed: {
@@ -207,7 +208,8 @@
                     {
                         [`${prefixCls}-content-no-mask`]: !this.showMask,
                         [`${prefixCls}-content-drag`]: this.draggable && !this.fullscreen,
-                        [`${prefixCls}-content-dragging`]: this.draggable && this.dragData.dragging
+                        [`${prefixCls}-content-dragging`]: this.draggable && this.dragData.dragging,
+                        [`${prefixCls}-content-shake`]: this.contentShake
                     }
                 ];
             },
@@ -303,6 +305,12 @@
             handleMousedown () {
                 this.isMouseTriggerIn = true;
             },
+            shake() {
+                this.contentShake = true;
+                setTimeout(() => {
+                    this.contentShake = false;
+                }, 500);
+            },
             cancel () {
                 this.close();
             },
@@ -316,6 +324,10 @@
                 this.$emit('on-ok');
             },
             EscClose (e) {
+                if (this.$IVIEW.modal.checkEscClose === true) {
+                    this.EscCheckClose(e);
+                    return;
+                }
                 if (this.visible && this.closable) {
                     if (e.keyCode === 27) {
                         const $Modals = findComponentsDownward(this.$root, 'Modal').filter(item => item.$data.visible && item.$props.closable);
@@ -323,6 +335,23 @@
                         const $TopModal = $Modals.sort((a, b) => {
                             return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
                         })[0];
+
+                        setTimeout(() => {
+                            $TopModal.close();
+                        }, 0);
+                    }
+                }
+            },
+            EscCheckClose (e) {
+                if (this.visible) {
+                    if (e.keyCode === 27) {
+                        const $TopModal = modalVisibleAggregate.sort((a, b) => {
+                            return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
+                        })[0];
+                        if (!$TopModal.$props.closable) {
+                            $TopModal.shake();
+                            return;
+                        }
 
                         setTimeout(() => {
                             $TopModal.close();
@@ -445,14 +474,17 @@
                     if (val && index === -1) {
                         modalVisibleAggregate.push({
                             _uid: this._uid,
-                            close: this.close
+                            $data: this.$data,
+                            $props: this.$props,
+                            close: this.close,
+                            shake: this.shake
                         });
                     }
                     if (!val && index > -1) {
                         modalVisibleAggregate.splice(index, 1);
                     }
-                    if (modalVisibleAggregate.length == 0) {
-                        resetIncrease()
+                    if (modalVisibleAggregate.length === 0) {
+                        resetIncrease();
                     }
                 }
                 //

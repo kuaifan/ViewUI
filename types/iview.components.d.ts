@@ -116,6 +116,7 @@ interface IViewGlobalOptions{
     };
     modal: {
         maskClosable: boolean | string;
+        checkEscClose: boolean | string;
     };
 }
 
