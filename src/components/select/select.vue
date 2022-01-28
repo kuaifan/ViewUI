@@ -540,7 +540,7 @@
         },
         methods: {
             isJson(obj) {
-                return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && typeof obj.length == "undefined";
+                return typeof (obj) == 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && typeof obj.length == 'undefined';
             },
             inUncancelable(value) {
                 if (this.multipleUncancelable.length === 0) {
@@ -695,6 +695,12 @@
                 this.unchangedQuery = true;
                 this.values = [];
                 this.filterQueryChange = false;
+            },
+            getValue() {
+                return this.values;
+            },
+            setValue(value) {
+                this.values = value;
             },
             handleKeydown (e) {
                 const key = e.key || e.code;
