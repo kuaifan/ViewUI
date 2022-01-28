@@ -172,7 +172,7 @@
         },
         methods: {
             isJson(obj) {
-                return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && typeof obj.length == "undefined";
+                return typeof (obj) == 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && typeof obj.length == 'undefined';
             },
 
             handleClick () {
