@@ -7,6 +7,8 @@
                 :prefix-cls="prefixCls"
                 :data="item"
                 :tmp-item="tmpItem"
+                :class="item.class || ''"
+                :style="item.style || {}"
                 @click.native.stop="handleClickItem(item)"
                 @mouseenter.native.stop="handleHoverItem(item)"></Casitem>
         </ul><Caspanel v-if="sublist && sublist.length" :prefix-cls="prefixCls" :data="sublist" :disabled="disabled" :trigger="trigger" :change-on-select="changeOnSelect"></Caspanel>
