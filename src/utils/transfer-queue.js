@@ -16,6 +16,10 @@ function resetIncrease() {
     lastVisibleIndex = 0;
 }
 
+function onModalVisibleClear() {
+    modalVisibleAggregate = modalVisibleAggregate.filter(({$data}) => $data.visible)
+}
+
 function onModalVisibleClosing() {
     if (modalVisibleClosing) {
         return false;
@@ -27,4 +31,4 @@ function onModalVisibleClosing() {
     return true;
 }
 
-export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClosing };
+export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };

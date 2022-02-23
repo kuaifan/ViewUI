@@ -1,5 +1,5 @@
 import Modal from './confirm';
-import { resetIncrease, modalVisibleAggregate, onModalVisibleClosing } from '../../utils/transfer-queue';
+import { resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -74,6 +74,7 @@ Modal.resetIndex = function () {
 };
 
 Modal.visibles = function () {
+    onModalVisibleClear()
     return modalVisibleAggregate;
 };
 
@@ -81,6 +82,7 @@ Modal.removeLast = function () {
     if (modalVisibleAggregate.length === 0) {
         return false;
     }
+    onModalVisibleClear()
     if (!onModalVisibleClosing()) {
         return true;
     }
