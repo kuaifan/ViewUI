@@ -1,6 +1,7 @@
 let transferIndex = 0;
 let lastVisibleIndex = 0;
 let modalVisibleAggregate = [];
+let modalVisibleClosing = false;
 
 function transferIncrease() {
     transferIndex++;
@@ -15,4 +16,15 @@ function resetIncrease() {
     lastVisibleIndex = 0;
 }
 
-export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate };
+function onModalVisibleClosing() {
+    if (modalVisibleClosing) {
+        return false;
+    }
+    modalVisibleClosing = true;
+    setTimeout(() => {
+        modalVisibleClosing = false;
+    }, 300);
+    return true;
+}
+
+export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClosing };

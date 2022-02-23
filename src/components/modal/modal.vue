@@ -354,7 +354,7 @@
                         }
 
                         setTimeout(() => {
-                            $TopModal.close();
+                            $TopModal.cancel();
                         }, 0);
                     }
                 }
@@ -471,20 +471,16 @@
             visible (val) {
                 if (this._uid) {
                     const index =  modalVisibleAggregate.findIndex(({_uid}) => _uid === this._uid);
-                    if (val) {
-                        const data = {
+                    if (val && index === -1) {
+                        modalVisibleAggregate.push({
                             _uid: this._uid,
                             $data: this.$data,
                             $props: this.$props,
-                            close: this.close,
+                            cancel: this.cancel,
                             shake: this.shake
-                        };
-                        if (index === -1) {
-                            modalVisibleAggregate.push(data);
-                        } else {
-                            modalVisibleAggregate.splice(index, 1, data);
-                        }
-                    } else if (index > -1) {
+                        });
+                    }
+                    if (!val && index > -1) {
                         modalVisibleAggregate.splice(index, 1);
                     }
                     if (modalVisibleAggregate.length === 0) {
