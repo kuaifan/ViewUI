@@ -24,7 +24,8 @@ Modal.newInstance = properties => {
             buttonLoading: false,
             scrollable: false,
             closable: false,
-            closing: false // 关闭有动画，期间使用此属性避免重复点击
+            closing: false, // 关闭有动画，期间使用此属性避免重复点击
+            enterOk: false,
         }),
         render (h) {
             let footerVNodes = [];
@@ -100,7 +101,8 @@ Modal.newInstance = properties => {
                 props: Object.assign({}, _props, {
                     width: this.width,
                     scrollable: this.scrollable,
-                    closable: this.closable
+                    closable: this.closable,
+                    enterOk: this.enterOk
                 }),
                 domProps: {
                     value: this.visible
@@ -267,6 +269,10 @@ Modal.newInstance = properties => {
 
             if ('scrollable' in props) {
                 modal.$parent.scrollable = props.scrollable;
+            }
+
+            if ('enterOk' in props) {
+                modal.$parent.enterOk = props.enterOk;
             }
 
             // notice when component destroy

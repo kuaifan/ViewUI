@@ -93,6 +93,10 @@
             cancelText: {
                 type: String
             },
+            enterOk: {
+                type: Boolean,
+                default: false
+            },
             loading: {
                 type: Boolean,
                 default: false
@@ -324,6 +328,9 @@
                 this.$emit('on-ok');
             },
             EscClose (e) {
+                if (this.CheckEnterOk(e)) {
+                    return;
+                }
                 if (this.$IVIEW.modal.checkEscClose === true) {
                     this.EscCheckClose(e);
                     return;
@@ -341,6 +348,21 @@
                         }, 0);
                     }
                 }
+            },
+            CheckEnterOk(e) {
+                if (this.visible) {
+                    if (e.keyCode === 13) {
+                        const $TopModal = modalVisibleAggregate.sort((a, b) => {
+                            return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
+                        })[0];
+                        if ($TopModal.$props.enterOk) {
+                            e.preventDefault()
+                            $TopModal.ok()
+                            return true
+                        }
+                    }
+                }
+                return false
             },
             EscCheckClose (e) {
                 if (this.visible) {
@@ -476,6 +498,7 @@
                             _uid: this._uid,
                             $data: this.$data,
                             $props: this.$props,
+                            ok: this.ok,
                             cancel: this.cancel,
                             shake: this.shake
                         });
