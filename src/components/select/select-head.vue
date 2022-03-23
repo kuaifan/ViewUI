@@ -238,6 +238,7 @@
                 this.$emit('on-input-focus');
             },
             onInputBlur () {
+                this.resetInputLength();
                 if (this.allowCreate && this.query !== '' && this.$parent.flatOptions.length == 0) {
                     this.handleInputEnter();
                     return;
@@ -252,8 +253,11 @@
                 this.dispatch('iSelect', 'on-select-selected', value);
             },
             resetInputState () {
-                this.inputLength = this.$refs.input.value.length * 12 + 20;
+                this.resetInputLength();
                 this.$emit('on-keydown');
+            },
+            resetInputLength () {
+                this.inputLength = this.$refs.input.value.length * 12 + 20;
             },
             handleInputDelete (e) {
                 const targetValue = e.target.value;
@@ -296,6 +300,7 @@
                 this.$nextTick(() => this.preventRemoteCall = false); // this should be after the query change setter above
             },
             query (val) {
+                this.resetInputLength();
                 if (this.preventRemoteCall) {
                     this.preventRemoteCall = false;
                     return;
