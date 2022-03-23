@@ -43,6 +43,10 @@
             // 4.5.0-5
             avatar: {
                 type: String
+            },
+            // 4.7.0-17
+            keyValue: {
+                type: [String, Number]
             }
         },
         data () {
