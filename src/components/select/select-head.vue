@@ -257,7 +257,9 @@
                 this.$emit('on-keydown');
             },
             resetInputLength () {
-                this.inputLength = this.$refs.input.value.length * 12 + 20;
+                if (this.filterable) {
+                    this.inputLength = this.$refs.input.value.length * 12 + 20;
+                }
             },
             handleInputDelete (e) {
                 const targetValue = e.target.value;
