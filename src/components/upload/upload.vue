@@ -261,6 +261,12 @@
                     }
                     dataJson.webkitRelativePath = file.webkitRelativePath;
                 }
+                if (this.isJson(file.ajaxExtraData)) {
+                    if (!this.isJson(dataJson)) {
+                        dataJson = {};
+                    }
+                    dataJson = Object.assign(dataJson, file.ajaxExtraData);
+                }
 
                 ajax({
                     headers: this.headers,
