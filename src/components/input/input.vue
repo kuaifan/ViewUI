@@ -156,6 +156,10 @@
                 type: Boolean,
                 default: false
             },
+            clearableFocus: {
+                type: Boolean,
+                default: true
+            },
             elementId: {
                 type: String
             },
@@ -389,6 +393,9 @@
                 this.setCurrentValue('');
                 this.$emit('on-change', e);
                 this.$emit('on-clear');
+                if (this.clearableFocus) {
+                    this.$refs.input.focus();
+                }
             },
             handleSearch () {
                 if (this.itemDisabled) return false;
