@@ -379,7 +379,7 @@
             },
             dropdownStyle() {
                 return this.innerWidth <= 768 ? {
-                    maxWidth: `${this.innerWidth * 0.9}px`,
+                    maxWidth: `${this.innerWidth * 0.98}px`,
                     overflow: 'auto',
                 } : null;
             },
