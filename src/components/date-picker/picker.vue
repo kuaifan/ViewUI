@@ -36,6 +36,7 @@
                 @click.native="handleTransferClick"
                 v-show="opened"
                 :class="dropdownCls"
+                :style="dropdownStyle"
                 :placement="placement"
                 ref="drop"
                 :eventsEnabled="eventsEnabled"
@@ -255,7 +256,9 @@
                     active: false
                 },
                 internalFocus: false,
-                isValueNull: false // hack：解决 value 置为 null 时，$emit:input 不是 null
+                isValueNull: false, // hack：解决 value 置为 null 时，$emit:input 不是 null
+
+                innerWidth: window.innerWidth,
             };
         },
         computed: {
@@ -373,7 +376,13 @@
                     [prefixCls + '-transfer']: this.transfer,
                     [this.transferClassName]: this.transferClassName
                 };
-            }
+            },
+            dropdownStyle() {
+                return this.innerWidth <= 768 ? {
+                    maxWidth: `${this.innerWidth * 0.9}px`,
+                    overflow: 'auto',
+                } : null;
+            },
         },
         methods: {
             onSelectionModeChange(type){
