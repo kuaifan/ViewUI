@@ -135,8 +135,11 @@
                     this.$emit('on-close', event, this.name);
                 }
             },
-            check () {
-                if (!this.checkable) return;
+            check (e) {
+                if (!this.checkable) {
+                    this.$emit('on-click', e);
+                    return;
+                }
                 const checked = !this.isChecked;
                 this.isChecked = checked;
                 if (this.name === undefined) {
