@@ -6,7 +6,8 @@ const prefixKey = 'ivu_message_key_';
 
 const defaults = {
     top: 24,
-    duration: 1.5
+    duration: 1.5,
+    followScrollY: true
 };
 
 let messageInstance;
@@ -25,7 +26,8 @@ function getMessageInstance () {
         prefixCls: prefixCls,
         styles: {
             top: `${defaults.top}px`
-        }
+        },
+        followScrollY: defaults.followScrollY,
     });
 
     return messageInstance;
@@ -100,6 +102,9 @@ export default {
         }
         if (options.duration || options.duration === 0) {
             defaults.duration = options.duration;
+        }
+        if (typeof options.followScrollY === "boolean") {
+            defaults.followScrollY = options.followScrollY;
         }
     },
     destroy () {
