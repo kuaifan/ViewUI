@@ -458,13 +458,16 @@
             },
             handleClickModal () {
                 if (this.draggable) {
-                    if (lastVisibleIndex !== this.lastVisibleIndex){
-                        this.lastVisibleIndex = lastVisibleIndex;
-                        return;
-                    }
-                    this.modalIndex = this.handleGetModalIndex();
+                    this.handleMoveTop();
                 }
-            }
+            },
+            handleMoveTop() {
+                if (lastVisibleIndex !== this.lastVisibleIndex){
+                    this.lastVisibleIndex = lastVisibleIndex;
+                    return;
+                }
+                this.modalIndex = this.handleGetModalIndex();
+            },
         },
         mounted () {
             if (this.visible) {
