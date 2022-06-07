@@ -64,7 +64,7 @@
             return {
                 notices: [],
                 tIndex: this.handleGetIndex(),
-                windowScrollY: 0,
+                localScrollY: 0,
             };
         },
         mounted() {
@@ -90,7 +90,7 @@
                 let styles = Object.assign({}, this.styles);
                 styles['z-index'] = 1010 + this.tIndex;
                 if (this.followScrollY) {
-                    styles['margin-top'] = Math.max(0, this.windowScrollY) + 'px';
+                    styles['margin-top'] = Math.max(0, this.localScrollY) + 'px';
                 }
                 return styles;
             }
@@ -129,7 +129,7 @@
                 return transferIndex;
             },
             windowScrollListener() {
-                this.windowScrollY = window.scrollY
+                this.localScrollY = window.scrollY
             },
         }
     };
