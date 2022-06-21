@@ -65,6 +65,7 @@
                 :name="name"
                 :value="currentValue"
                 :autofocus="autofocus"
+                :enterkeyhint="enterkeyhint"
                 @keyup.enter="handleEnter"
                 @keyup="handleKeyup"
                 @keypress="handleKeypress"
