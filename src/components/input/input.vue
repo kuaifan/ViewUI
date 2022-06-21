@@ -29,6 +29,7 @@
                 :value="currentValue"
                 :number="number"
                 :autofocus="autofocus"
+                :enterkeyhint="enterkeyhint"
                 @keyup.enter="handleEnter"
                 @keyup="handleKeyup"
                 @keypress="handleKeypress"
@@ -199,7 +200,11 @@
             border: {
                 type: Boolean,
                 default: true
-            }
+            },
+            enterkeyhint: {
+                type: String,
+                default: ''
+            },
         },
         data () {
             return {
