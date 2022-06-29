@@ -22,8 +22,8 @@ function confirm (options, again = false) {
     const append = ('append' in options) ? options.append : undefined;
     let instance  = getModalInstance(render, lockScroll, append);
 
-    if (instance.component.$parent.closing && again !== true) {
-        setTimeout(() => confirm(options, true), 300)
+    if ((instance.component.$parent.closing || instance.component.$parent.okIng) && again !== true) {
+        setTimeout(() => confirm(options, true), instance.component.$parent.okIng ? 350 : 300)
         return;
     }
 

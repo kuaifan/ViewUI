@@ -25,6 +25,7 @@ Modal.newInstance = properties => {
             scrollable: false,
             closable: false,
             closing: false, // 关闭有动画，期间使用此属性避免重复点击
+            okIng: false,
             enterOk: false,
         }),
         render (h) {
@@ -174,6 +175,7 @@ Modal.newInstance = properties => {
                     this.remove();
                 }
 
+                this.okIng = true;
                 const call = this.onOk();
                 if (call && call.then) {
                     call.then(() => {
@@ -181,7 +183,11 @@ Modal.newInstance = properties => {
                         this.remove();
                     }).catch(() => {
                         this.buttonLoading = false;
+                    }).finally(_ => {
+                        this.okIng = false;
                     });
+                } else {
+                    this.okIng = false;
                 }
             },
             remove () {

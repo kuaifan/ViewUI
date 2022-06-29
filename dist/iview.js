@@ -31403,7 +31403,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-31',
+    version: '4.7.0-32',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -40954,11 +40954,11 @@ function confirm(options) {
     var append = 'append' in options ? options.append : undefined;
     var instance = getModalInstance(render, lockScroll, append);
 
-    if (instance.component.$parent.closing && again !== true) {
+    if ((instance.component.$parent.closing || instance.component.$parent.okIng) && again !== true) {
         setTimeout(function () {
             (0, _newArrowCheck3.default)(this, _this);
             return confirm(options, true);
-        }.bind(this), 300);
+        }.bind(this), instance.component.$parent.okIng ? 350 : 300);
         return;
     }
 
@@ -41126,6 +41126,7 @@ _modal2.default.newInstance = function (properties) {
             scrollable: false,
             closable: false,
             closing: false,
+            okIng: false,
             enterOk: false
         }),
         render: function render(h) {
@@ -41261,6 +41262,7 @@ _modal2.default.newInstance = function (properties) {
                     this.remove();
                 }
 
+                this.okIng = true;
                 var call = this.onOk();
                 if (call && call.then) {
                     call.then(function () {
@@ -41272,7 +41274,13 @@ _modal2.default.newInstance = function (properties) {
                         (0, _newArrowCheck3.default)(this, _this2);
 
                         this.buttonLoading = false;
+                    }.bind(this)).finally(function (_) {
+                        (0, _newArrowCheck3.default)(this, _this2);
+
+                        this.okIng = false;
                     }.bind(this));
+                } else {
+                    this.okIng = false;
                 }
             },
             remove: function remove() {
