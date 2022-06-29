@@ -31403,7 +31403,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-29',
+    version: '4.7.0-30',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -41231,6 +41231,8 @@ _modal2.default.newInstance = function (properties) {
                 this.remove();
             },
             ok: function ok() {
+                var _this2 = this;
+
                 if (this.closing) return;
                 if (this.loading) {
                     this.buttonLoading = true;
@@ -41238,14 +41240,27 @@ _modal2.default.newInstance = function (properties) {
                     this.$children[0].visible = false;
                     this.remove();
                 }
-                this.onOk();
+
+                var call = this.onOk();
+                if (call && call.then) {
+                    call.then(function () {
+                        (0, _newArrowCheck3.default)(this, _this2);
+
+                        this.$children[0].visible = false;
+                        this.remove();
+                    }.bind(this)).catch(function () {
+                        (0, _newArrowCheck3.default)(this, _this2);
+
+                        this.buttonLoading = false;
+                    }.bind(this));
+                }
             },
             remove: function remove() {
-                var _this2 = this;
+                var _this3 = this;
 
                 this.closing = true;
                 setTimeout(function () {
-                    (0, _newArrowCheck3.default)(this, _this2);
+                    (0, _newArrowCheck3.default)(this, _this3);
 
                     this.closing = false;
                     this.destroy();
@@ -41254,11 +41269,13 @@ _modal2.default.newInstance = function (properties) {
             destroy: function destroy() {
                 this.$destroy();
                 if (this.$el) {
-                    if (this.append && (0, _typeof3.default)(this.append) === 'object') {
-                        this.append.removeChild(this.$el);
-                    } else {
-                        document.body.removeChild(this.$el);
-                    }
+                    try {
+                        if (this.append && (0, _typeof3.default)(this.append) === 'object') {
+                            this.append.removeChild(this.$el);
+                        } else {
+                            document.body.removeChild(this.$el);
+                        }
+                    } catch (e) {}
                 }
                 this.onRemove();
             },

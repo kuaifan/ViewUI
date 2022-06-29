@@ -173,7 +173,16 @@ Modal.newInstance = properties => {
                     this.$children[0].visible = false;
                     this.remove();
                 }
-                this.onOk();
+
+                const call = this.onOk();
+                if (call && call.then) {
+                    call.then(() => {
+                        this.$children[0].visible = false;
+                        this.remove();
+                    }).catch(() => {
+                        this.buttonLoading = false;
+                    });
+                }
             },
             remove () {
                 this.closing = true;
@@ -185,10 +194,14 @@ Modal.newInstance = properties => {
             destroy () {
                 this.$destroy();
                 if (this.$el) {
-                    if (this.append && typeof this.append === 'object') {
-                        this.append.removeChild(this.$el);
-                    } else {
-                        document.body.removeChild(this.$el);
+                    try {
+                        if (this.append && typeof this.append === 'object') {
+                            this.append.removeChild(this.$el);
+                        } else {
+                            document.body.removeChild(this.$el);
+                        }
+                    } catch (e) {
+
                     }
                 }
                 this.onRemove();
