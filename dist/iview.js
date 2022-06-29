@@ -31403,7 +31403,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-30',
+    version: '4.7.0-31',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -40945,10 +40945,22 @@ function getModalInstance() {
 }
 
 function confirm(options) {
+    var _this = this;
+
+    var again = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
     var render = 'render' in options ? options.render : undefined;
     var lockScroll = 'lockScroll' in options ? options.lockScroll : true;
     var append = 'append' in options ? options.append : undefined;
     var instance = getModalInstance(render, lockScroll, append);
+
+    if (instance.component.$parent.closing && again !== true) {
+        setTimeout(function () {
+            (0, _newArrowCheck3.default)(this, _this);
+            return confirm(options, true);
+        }.bind(this), 300);
+        return;
+    }
 
     options.onRemove = function () {
         modalInstance = null;
@@ -40997,6 +41009,14 @@ _confirm2.default.confirm = function () {
     return confirm(props);
 };
 
+_confirm2.default.next = function () {
+    var option = _transferQueue.modalVisibleWaitList.shift();
+    if (option) {
+        return confirm(option);
+    }
+    return null;
+};
+
 _confirm2.default.remove = function () {
     if (!modalInstance) {
         return false;
@@ -41017,7 +41037,7 @@ _confirm2.default.visibles = function () {
 };
 
 _confirm2.default.removeLast = function () {
-    var _this = this;
+    var _this2 = this;
 
     if (_transferQueue.modalVisibleAggregate.length === 0) {
         return false;
@@ -41027,7 +41047,7 @@ _confirm2.default.removeLast = function () {
         return true;
     }
     var $TopModal = _transferQueue.modalVisibleAggregate.sort(function (a, b) {
-        (0, _newArrowCheck3.default)(this, _this);
+        (0, _newArrowCheck3.default)(this, _this2);
 
         return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
     }.bind(this))[0];

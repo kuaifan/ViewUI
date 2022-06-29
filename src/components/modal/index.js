@@ -1,5 +1,5 @@
 import Modal from './confirm';
-import { resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
+import { resetIncrease, modalVisibleAggregate, modalVisibleWaitList, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -16,11 +16,16 @@ function getModalInstance (render = undefined, lockScroll = true, append = undef
     return modalInstance;
 }
 
-function confirm (options) {
+function confirm (options, again = false) {
     const render = ('render' in options) ? options.render : undefined;
     const lockScroll = ('lockScroll' in options) ? options.lockScroll : true;
     const append = ('append' in options) ? options.append : undefined;
     let instance  = getModalInstance(render, lockScroll, append);
+
+    if (instance.component.$parent.closing && again !== true) {
+        setTimeout(() => confirm(options, true), 300)
+        return;
+    }
 
     options.onRemove = function () {
         modalInstance = null;
@@ -57,6 +62,14 @@ Modal.confirm = function (props = {}) {
     props.icon = 'confirm';
     props.showCancel = true;
     return confirm(props);
+};
+
+Modal.next = function () {
+    const option = modalVisibleWaitList.shift();
+    if (option) {
+        return confirm(option);
+    }
+    return null;
 };
 
 Modal.remove = function () {
