@@ -59,8 +59,12 @@ Modal.error = function (props = {}) {
 };
 
 Modal.confirm = function (props = {}) {
-    props.icon = 'confirm';
-    props.showCancel = true;
+    if (typeof props.icon === 'undefined') {
+        props.icon = 'confirm';
+    }
+    if (typeof props.showCancel === 'undefined') {
+        props.showCancel = true;
+    }
     return confirm(props);
 };
 
