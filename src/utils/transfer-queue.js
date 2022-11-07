@@ -5,6 +5,16 @@ let modalVisibleClosing = false;
 
 function transferIncrease() {
     transferIndex++;
+    if (typeof window.modalTransferIndex === "number") {
+        window.modalTransferIndex++
+    }
+}
+
+function getTransferIndex() {
+    if (typeof window.modalTransferIndex === "number") {
+        return window.modalTransferIndex
+    }
+    return transferIndex
 }
 
 function lastVisibleIncrease() {
@@ -13,6 +23,9 @@ function lastVisibleIncrease() {
 
 function resetIncrease() {
     transferIndex = 0;
+    if (typeof window.modalTransferIndex === "number") {
+        window.modalTransferIndex = 0
+    }
     lastVisibleIndex = 0;
 }
 
@@ -31,4 +44,4 @@ function onModalVisibleClosing() {
     return true;
 }
 
-export { transferIndex, transferIncrease, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };
+export { transferIndex, transferIncrease, getTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };

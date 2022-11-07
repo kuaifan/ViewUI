@@ -23,7 +23,7 @@
 <script>
     import Notice from './notice.vue';
 
-    import { transferIndex, transferIncrease } from '../../../utils/transfer-queue';
+    import { getTransferIndex, transferIncrease } from '../../../utils/transfer-queue';
 
     const prefixCls = 'ivu-notification';
     let seed = 0;
@@ -126,7 +126,7 @@
             },
             handleGetIndex () {
                 transferIncrease();
-                return transferIndex;
+                return getTransferIndex();
             },
             windowScrollListener() {
                 this.localScrollY = window.scrollY

@@ -25,7 +25,7 @@
     import Popper from '../base/popper';
     import TransferDom from '../../directives/transfer-dom';
     import { oneOf } from '../../utils/assist';
-    import { transferIndex, transferIncrease } from '../../utils/transfer-queue';
+    import { getTransferIndex, transferIncrease } from '../../utils/transfer-queue';
 
     const prefixCls = 'ivu-tooltip';
 
@@ -149,7 +149,7 @@
             },
             handleGetIndex () {
                 transferIncrease();
-                return transferIndex;
+                return getTransferIndex();
             },
         },
         mounted () {

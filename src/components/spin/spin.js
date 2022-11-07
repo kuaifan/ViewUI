@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Spin from './spin.vue';
 
-import { transferIndex, transferIncrease } from '../../utils/transfer-queue';
+import { getTransferIndex, transferIncrease } from '../../utils/transfer-queue';
 
 function handleGetIndex() {
     transferIncrease();
-    return transferIndex;
+    return getTransferIndex();
 }
 
 let tIndex = handleGetIndex();
