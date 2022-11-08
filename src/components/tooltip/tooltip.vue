@@ -25,7 +25,7 @@
     import Popper from '../base/popper';
     import TransferDom from '../../directives/transfer-dom';
     import { oneOf } from '../../utils/assist';
-    import { getTransferIndex, transferIncrease } from '../../utils/transfer-queue';
+    import {getTransferIndex, hasTransferIndex, transferIncrease} from '../../utils/transfer-queue';
 
     const prefixCls = 'ivu-tooltip';
 
@@ -108,7 +108,7 @@
                 if (this.rawIndex !== null) {
                     styles['z-index'] = this.rawIndex;
                 } else {
-                    if (this.transfer) styles['z-index'] = 1060 + this.tIndex;
+                    if (this.transfer) styles['z-index'] = hasTransferIndex(this.tIndex, 1060 + this.tIndex);
                 }
 
                 return styles;

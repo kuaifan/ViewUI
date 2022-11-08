@@ -45,7 +45,7 @@
         transferIncrease as modalIncrease,
         lastVisibleIndex,
         lastVisibleIncrease,
-        modalVisibleAggregate
+        modalVisibleAggregate, hasTransferIndex
     } from '../../utils/transfer-queue';
 
     const prefixCls = 'ivu-modal';
@@ -189,7 +189,7 @@
             },
             wrapStyles () {
                 return {
-                    zIndex: this.modalIndex + this.zIndex
+                    zIndex: hasTransferIndex(this.modalIndex, this.modalIndex + this.zIndex)
                 };
             },
             maskClasses () {

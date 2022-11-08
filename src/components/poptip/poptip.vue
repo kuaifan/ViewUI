@@ -52,7 +52,7 @@
     import clickOutside from '../../directives/clickoutside';
     import TransferDom from '../../directives/transfer-dom';
     import { oneOf } from '../../utils/assist';
-    import { getTransferIndex, transferIncrease } from '../../utils/transfer-queue';
+    import {getTransferIndex, hasTransferIndex, transferIncrease} from '../../utils/transfer-queue';
     import Locale from '../../mixins/locale';
 
     const prefixCls = 'ivu-poptip';
@@ -164,7 +164,7 @@
                     style.width = `${this.width}px`;
                 }
 
-                if (this.transfer) style['z-index'] = 1060 + this.tIndex;
+                if (this.transfer) style['z-index'] = hasTransferIndex(this.tIndex, 1060 + this.tIndex);
 
                 return style;
             },

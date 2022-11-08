@@ -10,6 +10,13 @@ function transferIncrease() {
     }
 }
 
+function hasTransferIndex(hasValue, elseValue) {
+    if (typeof window.modalTransferIndex === "number") {
+        return hasValue
+    }
+    return elseValue
+}
+
 function getTransferIndex() {
     if (typeof window.modalTransferIndex === "number") {
         return window.modalTransferIndex
@@ -44,4 +51,4 @@ function onModalVisibleClosing() {
     return true;
 }
 
-export { transferIndex, transferIncrease, getTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };
+export { transferIndex, transferIncrease, getTransferIndex, hasTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };

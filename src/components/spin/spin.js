@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Spin from './spin.vue';
 
-import { getTransferIndex, transferIncrease } from '../../utils/transfer-queue';
+import {getTransferIndex, hasTransferIndex, transferIncrease} from '../../utils/transfer-queue';
 
 function handleGetIndex() {
     transferIncrease();
@@ -38,7 +38,7 @@ Spin.newInstance = properties => {
             return h('div', {
                 'class': 'ivu-spin-fullscreen ivu-spin-fullscreen-wrapper',
                 'style': {
-                    'z-index': 2010 + tIndex
+                    'z-index': hasTransferIndex(tIndex, 2010 + tIndex)
                 }
             }, [vnode]);
         }

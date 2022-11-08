@@ -23,7 +23,7 @@
 <script>
     import Notice from './notice.vue';
 
-    import { getTransferIndex, transferIncrease } from '../../../utils/transfer-queue';
+    import {getTransferIndex, hasTransferIndex, transferIncrease} from '../../../utils/transfer-queue';
 
     const prefixCls = 'ivu-notification';
     let seed = 0;
@@ -88,7 +88,7 @@
             },
             wrapStyles () {
                 let styles = Object.assign({}, this.styles);
-                styles['z-index'] = 1010 + this.tIndex;
+                styles['z-index'] = hasTransferIndex(this.tIndex, 1010 + this.tIndex);
                 if (this.followScrollY) {
                     styles['margin-top'] = Math.max(0, this.localScrollY) + 'px';
                 }

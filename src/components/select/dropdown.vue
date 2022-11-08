@@ -7,7 +7,7 @@
     import { getStyle } from '../../utils/assist';
     const Popper = isServer ? function() {} : require('popper.js/dist/umd/popper.js');  // eslint-disable-line
 
-    import { transferIndex, transferIncrease } from '../../utils/transfer-queue';
+    import {getTransferIndex, hasTransferIndex, transferIncrease} from '../../utils/transfer-queue';
 
     export default {
         name: 'Drop',
@@ -41,7 +41,7 @@
                 let style = {};
                 if (this.width) style.minWidth = `${this.width}px`;
 
-                if (this.transfer) style['z-index'] = 1060 + this.tIndex;
+                if (this.transfer) style['z-index'] = hasTransferIndex(this.tIndex, 1060 + this.tIndex);
 
                 return style;
             }
@@ -108,7 +108,7 @@
             },
             handleGetIndex () {
                 transferIncrease();
-                return transferIndex;
+                return getTransferIndex();
             },
         },
         created () {
