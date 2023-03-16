@@ -383,6 +383,7 @@
                 isTyping: false,  // #728
                 preventRemoteCall: false,
                 filterQueryChange: false,  // #4273
+                supportTouch: "ontouchend" in document,
             };
         },
         computed: {
@@ -793,7 +794,7 @@
                         this.values = this.values.concat(option);
                     }
 
-                    this.isFocused = true; // so we put back focus after clicking with mouse on option elements
+                    if (!this.supportTouch) this.isFocused = true; // so we put back focus after clicking with mouse on option elements
                 } else {
                     this.query = String(option.label).trim();
                     this.values = [option];
@@ -808,9 +809,7 @@
 
                 if (this.filterable){
                     const inputField = this.$el.querySelector('input[type="text"]');
-                    if (!this.autoComplete && !("ontouchend" in document)) {
-                        this.$nextTick(() => inputField.focus());
-                    }
+                    if (!this.autoComplete && !this.supportTouch) this.$nextTick(() => inputField.focus());
                 }
                 this.$emit('on-select', option); // # 4441
                 this.broadcast('Drop', 'on-update-popper');
