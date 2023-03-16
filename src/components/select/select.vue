@@ -808,7 +808,9 @@
 
                 if (this.filterable){
                     const inputField = this.$el.querySelector('input[type="text"]');
-                    if (!this.autoComplete) this.$nextTick(() => inputField.focus());
+                    if (!this.autoComplete && !("ontouchend" in document)) {
+                        this.$nextTick(() => inputField.focus());
+                    }
                 }
                 this.$emit('on-select', option); // # 4441
                 this.broadcast('Drop', 'on-update-popper');
