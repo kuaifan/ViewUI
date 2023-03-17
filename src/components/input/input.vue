@@ -206,6 +206,9 @@
                 type: String,
                 default: ''
             },
+            parser: {
+                type: Function
+            },
         },
         data () {
             return {
@@ -337,6 +340,12 @@
                 if (this.isOnComposition) return;
 
                 let value = event.target.value;
+                if (this.parser) {
+                    let tmp = this.parser(value);
+                    if (tmp !== value) {
+                        event.target.value = value = tmp
+                    }
+                }
                 if (this.number && value !== '') value = Number.isNaN(Number(value)) ? value : Number(value);
                 this.$emit('input', value);
                 this.setCurrentValue(value);
