@@ -26,7 +26,7 @@
             type="text"
             v-if="filterable"
             v-model="query"
-            v-show="query == '' || !searchInOption"
+            v-show="showInput"
             :readonly="searchInOption"
             :disabled="disabled"
             :class="[prefixCls + '-input']"
@@ -232,7 +232,13 @@
                     }
                 }
                 return size;
-            }
+            },
+            showInput() {
+                if (this.searchInOption) {
+                    return this.showPlaceholder && this.query === ''
+                }
+                return true
+            },
         },
         methods: {
             inUncancelable(value) {

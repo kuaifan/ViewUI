@@ -69,7 +69,7 @@
             >
                 <slot name="drop-prepend"></slot>
 
-                <div v-if="searchInOption" :class="prefixCls + '-search-in-option'">
+                <div v-if="searchInOption" ref="searchInOption" :class="prefixCls + '-search-in-option'">
                     <Input v-model="query" :placeholder="localePlaceholder"/>
                 </div>
 
@@ -218,6 +218,10 @@
             searchInOption: {
                 type: Boolean,
                 default: false
+            },
+            // 搜索框在选项里面的提示语
+            searchPlaceholder: {
+                type: String
             },
             disabled: {
                 type: Boolean,
@@ -549,10 +553,10 @@
                 return typeof this.remoteMethod === 'function';
             },
             localePlaceholder () {
-                if (this.placeholder === undefined) {
+                if (this.searchPlaceholder === undefined) {
                     return this.t('i.transfer.filterPlaceholder');
                 } else {
-                    return this.placeholder;
+                    return this.searchPlaceholder;
                 }
             },
         },
@@ -674,6 +678,14 @@
                 if (this.visible) {
                     if (event.type === 'mousedown') {
                         if (this.clickOutStopPropagation) {
+
+                            if (this.searchInOption) {
+                                const eo = this.$refs.searchInOption;
+                                if (eo === event.target || eo.contains(event.target)) {
+                                    return;
+                                }
+                            }
+
                             event.preventDefault();
                         }
                         return;
