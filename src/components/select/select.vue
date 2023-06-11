@@ -31,6 +31,7 @@
                     :filterable="filterable"
                     :multiple="multiple"
                     :multipleUncancelable="multipleUncancelable"
+                    :searchInOption="searchInOption"
                     :values="values"
                     :clearable="canBeCleared"
                     :prefix="prefix"
@@ -67,6 +68,10 @@
                 :eventsEnabled="eventsEnabled"
             >
                 <slot name="drop-prepend"></slot>
+
+                <div v-if="searchInOption" :class="prefixCls + '-search-in-option'">
+                    <Input v-model="query" :placeholder="localePlaceholder"/>
+                </div>
 
                 <ul v-show="showNotFoundLabel && !allowCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
 
@@ -208,6 +213,11 @@
                 default: () => {
                     return [];
                 }
+            },
+            // 搜索框在选项里面
+            searchInOption: {
+                type: Boolean,
+                default: false
             },
             disabled: {
                 type: Boolean,
@@ -537,7 +547,14 @@
             },
             remote(){
                 return typeof this.remoteMethod === 'function';
-            }
+            },
+            localePlaceholder () {
+                if (this.placeholder === undefined) {
+                    return this.t('i.transfer.filterPlaceholder');
+                } else {
+                    return this.placeholder;
+                }
+            },
         },
         methods: {
             isJson(obj) {

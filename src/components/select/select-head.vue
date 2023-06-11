@@ -26,6 +26,8 @@
             type="text"
             v-if="filterable"
             v-model="query"
+            v-show="query == '' || !searchInOption"
+            :readonly="searchInOption"
             :disabled="disabled"
             :class="[prefixCls + '-input']"
             :placeholder="showPlaceholder ? localePlaceholder : ''"
@@ -73,6 +75,11 @@
                 default: () => {
                     return [];
                 }
+            },
+            // 搜索框在选项里面
+            searchInOption: {
+                type: Boolean,
+                default: false
             },
             remote: {
                 type: Boolean,
