@@ -202,6 +202,16 @@ export declare class ModalConfig {
      */
     cancelText?: string;
     /**
+     * 确定按钮的类型
+     * @default primary
+     */
+    okType?: string;
+    /**
+     * 取消按钮的类型
+     * @default text
+     */
+    cancelType?: string;
+    /**
      * 点击确定按钮时，确定按钮是否显示 loading 状态，开启则需手动调用Modal.remove()来关闭对话框
      * @default false
      */

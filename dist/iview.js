@@ -31456,7 +31456,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-47',
+    version: '4.7.0-48',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -41183,6 +41183,8 @@ _modal2.default.newInstance = function (properties) {
             iconName: '',
             okText: undefined,
             cancelText: undefined,
+            okType: null,
+            cancelType: null,
             showCancel: false,
             loading: false,
             buttonLoading: false,
@@ -41199,7 +41201,7 @@ _modal2.default.newInstance = function (properties) {
             if (this.showCancel) {
                 footerVNodes.push(h(_button2.default, {
                     props: {
-                        type: 'text'
+                        type: this.cancelType || 'text'
                     },
                     on: {
                         click: this.cancel
@@ -41208,7 +41210,7 @@ _modal2.default.newInstance = function (properties) {
             }
             footerVNodes.push(h(_button2.default, {
                 props: {
-                    type: 'primary',
+                    type: this.okType || 'primary',
                     loading: this.buttonLoading
                 },
                 on: {
@@ -41429,6 +41431,14 @@ _modal2.default.newInstance = function (properties) {
 
             if ('cancelText' in props) {
                 modal.$parent.cancelText = props.cancelText;
+            }
+
+            if ('okType' in props) {
+                modal.$parent.okType = props.okType;
+            }
+
+            if ('cancelType' in props) {
+                modal.$parent.cancelType = props.cancelType;
             }
 
             if ('onCancel' in props) {

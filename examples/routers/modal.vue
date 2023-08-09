@@ -152,6 +152,7 @@
                     this.$Modal.confirm({
                         title: '关闭确认',
                         content: '您确认要关闭弹窗吗？',
+                        okType: 'warning',
                         onOk: () => {
                             resolve();
                         },
