@@ -3,6 +3,12 @@ let lastVisibleIndex = 0;
 let modalVisibleAggregate = [];
 let modalVisibleClosing = false;
 
+let modalVisibleWaitList = [];
+let modalConfirmGroup = {
+    load: 0,
+    list: [],
+};
+
 function transferIncrease() {
     transferIndex++;
     if (typeof window.modalTransferIndex === "number") {
@@ -51,4 +57,4 @@ function onModalVisibleClosing() {
     return true;
 }
 
-export { transferIndex, transferIncrease, getTransferIndex, hasTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing };
+export { transferIndex, transferIncrease, getTransferIndex, hasTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing, modalVisibleWaitList, modalConfirmGroup};

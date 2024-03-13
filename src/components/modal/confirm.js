@@ -38,7 +38,9 @@ Modal.newInstance = properties => {
                         type: this.cancelType || 'text'
                     },
                     on: {
-                        click: this.cancel
+                        click: () => {
+                            this.cancel(true)
+                        }
                     }
                 }, this.localeCancelText));
             }
@@ -161,11 +163,11 @@ Modal.newInstance = properties => {
             }
         },
         methods: {
-            cancel () {
+            cancel (isButton = false) {
                 if (this.closing) return;
                 this.$children[0].visible = false;
                 this.buttonLoading = false;
-                this.onCancel();
+                this.onCancel(isButton);
                 this.remove();
             },
             ok () {

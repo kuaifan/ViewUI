@@ -1,5 +1,5 @@
 import Modal from './confirm';
-import { resetIncrease, modalVisibleAggregate, modalVisibleWaitList, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
+import { resetIncrease, modalVisibleAggregate, modalVisibleWaitList, modalConfirmGroup, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -17,6 +17,16 @@ function getModalInstance (render = undefined, lockScroll = true, append = undef
 }
 
 function confirm (options, again = false) {
+    if (options.wait === true) {
+        delete options.wait;
+        if (modalConfirmGroup.load > 0) {
+            modalConfirmGroup.list.push({
+                options: options,
+                again: again
+            });
+            return;
+        }
+    }
     const render = ('render' in options) ? options.render : undefined;
     const lockScroll = ('lockScroll' in options) ? options.lockScroll : true;
     const append = ('append' in options) ? options.append : undefined;
@@ -27,8 +37,14 @@ function confirm (options, again = false) {
         return;
     }
 
+    modalConfirmGroup.load++;
     options.onRemove = function () {
         modalInstance = null;
+        modalConfirmGroup.load--;
+        const next = modalConfirmGroup.list.shift();
+        if (next) {
+            confirm(next.options, next.again);
+        }
     };
 
     instance.show(options);

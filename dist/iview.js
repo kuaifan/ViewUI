@@ -1680,7 +1680,7 @@ exports.default = _assign2.default || function (target) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.onModalVisibleClosing = exports.onModalVisibleClear = exports.modalVisibleAggregate = exports.resetIncrease = exports.lastVisibleIncrease = exports.lastVisibleIndex = exports.hasTransferIndex = exports.getTransferIndex = exports.transferIncrease = exports.transferIndex = undefined;
+exports.modalConfirmGroup = exports.modalVisibleWaitList = exports.onModalVisibleClosing = exports.onModalVisibleClear = exports.modalVisibleAggregate = exports.resetIncrease = exports.lastVisibleIncrease = exports.lastVisibleIndex = exports.hasTransferIndex = exports.getTransferIndex = exports.transferIncrease = exports.transferIndex = undefined;
 
 var _newArrowCheck2 = __webpack_require__(1);
 
@@ -1692,6 +1692,12 @@ var transferIndex = 0;
 var lastVisibleIndex = 0;
 var modalVisibleAggregate = [];
 var modalVisibleClosing = false;
+
+var modalVisibleWaitList = [];
+var modalConfirmGroup = {
+    load: 0,
+    list: []
+};
 
 function transferIncrease() {
     exports.transferIndex = transferIndex += 1;
@@ -1761,6 +1767,8 @@ exports.resetIncrease = resetIncrease;
 exports.modalVisibleAggregate = modalVisibleAggregate;
 exports.onModalVisibleClear = onModalVisibleClear;
 exports.onModalVisibleClosing = onModalVisibleClosing;
+exports.modalVisibleWaitList = modalVisibleWaitList;
+exports.modalConfirmGroup = modalConfirmGroup;
 
 /***/ }),
 /* 34 */
@@ -6495,7 +6503,7 @@ var Popper = isServer ? function () {} : __webpack_require__(118);exports.defaul
 
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.15.0
+ * @version 1.16.1
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -6523,16 +6531,17 @@ var Popper = isServer ? function () {} : __webpack_require__(118);exports.defaul
 	(global.Popper = factory());
 }(this, (function () { 'use strict';
 
-var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined' && typeof navigator !== 'undefined';
 
-var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
-var timeoutDuration = 0;
-for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
-  if (isBrowser && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
-    timeoutDuration = 1;
-    break;
+var timeoutDuration = function () {
+  var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
+  for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
+    if (isBrowser && navigator.userAgent.indexOf(longerTimeoutBrowsers[i]) >= 0) {
+      return 1;
+    }
   }
-}
+  return 0;
+}();
 
 function microtaskDebounce(fn) {
   var called = false;
@@ -6650,6 +6659,17 @@ function getScrollParent(element) {
   }
 
   return getScrollParent(getParentNode(element));
+}
+
+/**
+ * Returns the reference node of the reference object, or the reference object itself.
+ * @method
+ * @memberof Popper.Utils
+ * @param {Element|Object} reference - the reference element (the popper will be relative to this)
+ * @returns {Element} parent
+ */
+function getReferenceNode(reference) {
+  return reference && reference.referenceNode ? reference.referenceNode : reference;
 }
 
 var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
@@ -6835,7 +6855,7 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
+  return parseFloat(styles['border' + sideA + 'Width']) + parseFloat(styles['border' + sideB + 'Width']);
 }
 
 function getSize(axis, body, html, computedStyle) {
@@ -6960,8 +6980,8 @@ function getBoundingClientRect(element) {
 
   // subtract scrollbar size from sizes
   var sizes = element.nodeName === 'HTML' ? getWindowSizes(element.ownerDocument) : {};
-  var width = sizes.width || element.clientWidth || result.right - result.left;
-  var height = sizes.height || element.clientHeight || result.bottom - result.top;
+  var width = sizes.width || element.clientWidth || result.width;
+  var height = sizes.height || element.clientHeight || result.height;
 
   var horizScrollbar = element.offsetWidth - width;
   var vertScrollbar = element.offsetHeight - height;
@@ -6990,8 +7010,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
-  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
+  var borderTopWidth = parseFloat(styles.borderTopWidth);
+  var borderLeftWidth = parseFloat(styles.borderLeftWidth);
 
   // In cases where the parent is fixed, we must ignore negative scroll in offset calc
   if (fixedPosition && isHTML) {
@@ -7012,8 +7032,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = parseFloat(styles.marginTop, 10);
-    var marginLeft = parseFloat(styles.marginLeft, 10);
+    var marginTop = parseFloat(styles.marginTop);
+    var marginLeft = parseFloat(styles.marginLeft);
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -7113,7 +7133,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
   // NOTE: 1 DOM access here
 
   var boundaries = { top: 0, left: 0 };
-  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, getReferenceNode(reference));
 
   // Handle viewport case
   if (boundariesElement === 'viewport') {
@@ -7241,7 +7261,7 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
 function getReferenceOffsets(state, popper, reference) {
   var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
-  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, getReferenceNode(reference));
   return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
 }
 
@@ -7503,7 +7523,7 @@ function destroy() {
 
   this.disableEventListeners();
 
-  // remove the popper if user explicity asked for the deletion on destroy
+  // remove the popper if user explicitly asked for the deletion on destroy
   // do not use `remove` because IE11 doesn't support it
   if (this.options.removeOnDestroy) {
     this.popper.parentNode.removeChild(this.popper);
@@ -7952,8 +7972,8 @@ function arrow(data, options) {
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
   var css = getStyleComputedProperty(data.instance.popper);
-  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
-  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
+  var popperMarginSide = parseFloat(css['margin' + sideCapitalized]);
+  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width']);
   var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
@@ -13274,7 +13294,7 @@ exports.default = {
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;// TinyColor v1.4.1
+var __WEBPACK_AMD_DEFINE_RESULT__;// TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
 
@@ -31456,7 +31476,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-48',
+    version: '4.7.0-49',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -37316,7 +37336,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
+
+  _setPrototypeOf(subClass, superClass);
 }
 
 function _getPrototypeOf(o) {
@@ -37341,7 +37362,7 @@ function _isNativeReflectConstruct() {
   if (typeof Proxy === "function") return true;
 
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
     return true;
   } catch (e) {
     return false;
@@ -37472,11 +37493,6 @@ function format() {
           return x;
       }
     });
-
-    for (var arg = args[i]; i < len; arg = args[++i]) {
-      str += " " + arg;
-    }
-
     return str;
   }
 
@@ -37484,7 +37500,7 @@ function format() {
 }
 
 function isNativeStringType(type) {
-  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'pattern';
+  return type === 'string' || type === 'url' || type === 'hex' || type === 'email' || type === 'date' || type === 'pattern';
 }
 
 function isEmptyValue(value, type) {
@@ -37647,7 +37663,7 @@ function deepMerge(target, source) {
         var value = source[s];
 
         if (typeof value === 'object' && typeof target[s] === 'object') {
-          target[s] = _extends(_extends({}, target[s]), value);
+          target[s] = _extends({}, target[s], value);
         } else {
           target[s] = value;
         }
@@ -37724,7 +37740,7 @@ var types = {
     }
   },
   date: function date(value) {
-    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear === 'function';
+    return typeof value.getTime === 'function' && typeof value.getMonth === 'function' && typeof value.getYear === 'function' && !isNaN(value.getTime());
   },
   number: function number(value) {
     if (isNaN(value)) {
@@ -38143,13 +38159,13 @@ function array(rule, value, callback, source, options) {
   var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field);
 
   if (validate) {
-    if (isEmptyValue(value, 'array') && !rule.required) {
+    if ((value === undefined || value === null) && !rule.required) {
       return callback();
     }
 
     rules.required(rule, value, source, errors, options, 'array');
 
-    if (!isEmptyValue(value, 'array')) {
+    if (value !== undefined && value !== null) {
       rules.type(rule, value, source, errors, options);
       rules.range(rule, value, source, errors, options);
     }
@@ -38258,19 +38274,19 @@ function date(rule, value, callback, source, options) {
   var validate = rule.required || !rule.required && source.hasOwnProperty(rule.field); // console.log('validate on %s value', value);
 
   if (validate) {
-    if (isEmptyValue(value) && !rule.required) {
+    if (isEmptyValue(value, 'date') && !rule.required) {
       return callback();
     }
 
     rules.required(rule, value, source, errors, options);
 
-    if (!isEmptyValue(value)) {
+    if (!isEmptyValue(value, 'date')) {
       var dateObject;
 
-      if (typeof value === 'number') {
-        dateObject = new Date(value);
-      } else {
+      if (value instanceof Date) {
         dateObject = value;
+      } else {
+        dateObject = new Date(value);
       }
 
       rules.type(rule, dateObject, source, errors, options);
@@ -38576,7 +38592,7 @@ Schema.prototype = {
       rule.field = data.field;
 
       function addFullfield(key, schema) {
-        return _extends(_extends({}, schema), {}, {
+        return _extends({}, schema, {
           fullField: rule.fullField + "." + key
         });
       }
@@ -38596,7 +38612,7 @@ Schema.prototype = {
           Schema.warning('async-validator:', errors);
         }
 
-        if (errors.length && rule.message) {
+        if (errors.length && rule.message !== undefined) {
           errors = [].concat(rule.message);
         }
 
@@ -38614,7 +38630,7 @@ Schema.prototype = {
           // does not exist fail at the rule level and don't
           // go deeper
           if (rule.required && !data.value) {
-            if (rule.message) {
+            if (rule.message !== undefined) {
               errors = [].concat(rule.message).map(complementError(rule));
             } else if (options.error) {
               errors = [options.error(rule, format(options.messages.required, rule.field))];
@@ -38633,7 +38649,7 @@ Schema.prototype = {
             }
           }
 
-          fieldsSchema = _extends(_extends({}, fieldsSchema), data.rule.fields);
+          fieldsSchema = _extends({}, fieldsSchema, data.rule.fields);
 
           for (var f in fieldsSchema) {
             if (fieldsSchema.hasOwnProperty(f)) {
@@ -41008,6 +41024,16 @@ function confirm(options) {
 
     var again = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+    if (options.wait === true) {
+        delete options.wait;
+        if (_transferQueue.modalConfirmGroup.load > 0) {
+            _transferQueue.modalConfirmGroup.list.push({
+                options: options,
+                again: again
+            });
+            return;
+        }
+    }
     var render = 'render' in options ? options.render : undefined;
     var lockScroll = 'lockScroll' in options ? options.lockScroll : true;
     var append = 'append' in options ? options.append : undefined;
@@ -41021,8 +41047,14 @@ function confirm(options) {
         return;
     }
 
+    _transferQueue.modalConfirmGroup.load++;
     options.onRemove = function () {
         modalInstance = null;
+        _transferQueue.modalConfirmGroup.load--;
+        var next = _transferQueue.modalConfirmGroup.list.shift();
+        if (next) {
+            confirm(next.options, next.again);
+        }
     };
 
     instance.show(options);
@@ -41204,7 +41236,11 @@ _modal2.default.newInstance = function (properties) {
                         type: this.cancelType || 'text'
                     },
                     on: {
-                        click: this.cancel
+                        click: function click() {
+                            (0, _newArrowCheck3.default)(this, _this);
+
+                            this.cancel(true);
+                        }.bind(this)
                     }
                 }, this.localeCancelText));
             }
@@ -41310,10 +41346,12 @@ _modal2.default.newInstance = function (properties) {
         },
         methods: {
             cancel: function cancel() {
+                var isButton = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
                 if (this.closing) return;
                 this.$children[0].visible = false;
                 this.buttonLoading = false;
-                this.onCancel();
+                this.onCancel(isButton);
                 this.remove();
             },
             ok: function ok() {
@@ -42853,7 +42891,12 @@ module.exports = function(options) {
                         //So if it is not present, poll it with an timeout until it is present.
                         //TODO: Could maybe be handled better with object.onreadystatechange or similar.
                         if(!element.contentDocument) {
-                            setTimeout(function checkForObjectDocument() {
+                            var state = getState(element);
+                            if (state.checkForObjectDocumentTimeoutId) {
+                                window.clearTimeout(state.checkForObjectDocumentTimeoutId);
+                            }
+                            state.checkForObjectDocumentTimeoutId = setTimeout(function checkForObjectDocument() {
+                                state.checkForObjectDocumentTimeoutId = 0;
                                 getDocument(element, callback);
                             }, 100);
 
@@ -42886,6 +42929,7 @@ module.exports = function(options) {
                 object.style.cssText = OBJECT_STYLE;
                 object.tabIndex = -1;
                 object.type = "text/html";
+                object.setAttribute("aria-hidden", "true");
                 object.onload = onObjectLoad;
 
                 //Safari: This must occur before adding the object to the DOM.
@@ -42951,6 +42995,11 @@ module.exports = function(options) {
         } else {
             element.removeChild(object);
         }
+
+        if (getState(element).checkForObjectDocumentTimeoutId) {
+            window.clearTimeout(getState(element).checkForObjectDocumentTimeoutId);
+        }
+
         delete getState(element).object;
     }
 
@@ -43142,7 +43191,8 @@ module.exports = function(options) {
 
         function isDetached(element) {
             function isInDocument(element) {
-                return element === element.ownerDocument.body || element.ownerDocument.body.contains(element);
+                var isInShadowRoot = element.getRootNode && element.getRootNode().contains(element);
+                return element === element.ownerDocument.body || element.ownerDocument.body.contains(element) || isInShadowRoot;
             }
 
             if (!isInDocument(element)) {
@@ -43374,11 +43424,21 @@ module.exports = function(options) {
             rootContainer.appendChild(containerContainer);
 
             function onExpandScroll() {
-                getState(element).onExpand && getState(element).onExpand();
+                var state = getState(element);
+                if (state && state.onExpand) {
+                    state.onExpand();
+                } else {
+                    debug("Aborting expand scroll handler: element has been uninstalled");
+                }
             }
 
             function onShrinkScroll() {
-                getState(element).onShrink && getState(element).onShrink();
+                var state = getState(element);
+                if (state && state.onShrink) {
+                    state.onShrink();
+                } else {
+                    debug("Aborting shrink scroll handler: element has been uninstalled");
+                }
             }
 
             addEvent(expand, "scroll", onExpandScroll);
