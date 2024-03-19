@@ -24,7 +24,7 @@ function getBody(xhr) {
 
 export default function upload(option) {
     if (typeof XMLHttpRequest === 'undefined') {
-        return;
+        return null;
     }
 
     const xhr = new XMLHttpRequest();
@@ -79,4 +79,6 @@ export default function upload(option) {
         }
     }
     xhr.send(formData);
+
+    return xhr;
 }

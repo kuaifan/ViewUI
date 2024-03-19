@@ -154,6 +154,7 @@
                 prefixCls: prefixCls,
                 dragOver: false,
                 fileList: [],
+                ajaxList: [],
                 tempIndex: 1
             };
         },
@@ -231,6 +232,21 @@
                     // this.$emit('cancel', file);
                 }
             },
+            cancel (uid) {
+                let num = 0;
+                this.ajaxList.forEach(item => {
+                    if (item.uid === uid) {
+                        num++;
+                        if (item.request) {
+                            item.request.abort();
+                        }
+                    }
+                });
+                if (num > 0) {
+                    this.ajaxList = this.ajaxList.filter(item => item.uid !== uid);
+                }
+                return num;
+            },
             post (file) {
                 // check format
                 if (this.format.length) {
@@ -268,22 +284,27 @@
                     dataJson = Object.assign(dataJson, file.ajaxExtraData);
                 }
 
-                ajax({
-                    headers: this.headers,
-                    withCredentials: this.withCredentials,
-                    file: file,
-                    data: dataJson,
-                    filename: this.name,
-                    action: this.action,
-                    onProgress: e => {
-                        this.handleProgress(e, file);
-                    },
-                    onSuccess: res => {
-                        this.handleSuccess(res, file);
-                    },
-                    onError: (err, response) => {
-                        this.handleError(err, response, file);
-                    }
+                this.ajaxList.push({
+                    uid: file.uid,
+                    request: ajax({
+                        headers: this.headers,
+                        withCredentials: this.withCredentials,
+                        file: file,
+                        data: dataJson,
+                        filename: this.name,
+                        action: this.action,
+                        onProgress: e => {
+                            this.handleProgress(e, file);
+                        },
+                        onSuccess: res => {
+                            this.handleSuccess(res, file);
+                            this.ajaxList = this.ajaxList.filter(({uid}) => uid !== file.uid);
+                        },
+                        onError: (err, response) => {
+                            this.handleError(err, response, file);
+                            this.ajaxList = this.ajaxList.filter(({uid}) => uid !== file.uid);
+                        }
+                    })
                 });
             },
             handleStart (file) {
