@@ -31505,7 +31505,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-52',
+    version: '4.7.0-53',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -41167,18 +41167,19 @@ _confirm2.default.visibles = function () {
 _confirm2.default.removeLast = function () {
     var _this2 = this;
 
-    if (_transferQueue.modalVisibleAggregate.length === 0) {
+    var aggregates = _transferQueue.modalVisibleAggregate.filter(function (m) {
+        (0, _newArrowCheck3.default)(this, _this2);
+
+        return !m.$props.ignoreRemoveLast;
+    }.bind(this));
+    if (aggregates.length === 0) {
         return false;
     }
     (0, _transferQueue.onModalVisibleClear)();
     if (!(0, _transferQueue.onModalVisibleClosing)()) {
         return true;
     }
-    var $TopModal = _transferQueue.modalVisibleAggregate.map(function (m) {
-        (0, _newArrowCheck3.default)(this, _this2);
-
-        return !m.$props.ignoreRemoveLast;
-    }.bind(this)).sort(function (a, b) {
+    var $TopModal = aggregates.sort(function (a, b) {
         (0, _newArrowCheck3.default)(this, _this2);
 
         return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;

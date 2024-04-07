@@ -112,16 +112,17 @@ Modal.visibles = function () {
 };
 
 Modal.removeLast = function () {
-    if (modalVisibleAggregate.length === 0) {
+    const aggregates = modalVisibleAggregate.filter(m => {
+        return !m.$props.ignoreRemoveLast
+    })
+    if (aggregates.length === 0) {
         return false;
     }
     onModalVisibleClear()
     if (!onModalVisibleClosing()) {
         return true;
     }
-    const $TopModal = modalVisibleAggregate.map(m => {
-        return !m.$props.ignoreRemoveLast
-    }).sort((a, b) => {
+    const $TopModal = aggregates.sort((a, b) => {
         return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
     })[0];
     if ($TopModal) {
