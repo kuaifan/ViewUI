@@ -119,7 +119,9 @@ Modal.removeLast = function () {
     if (!onModalVisibleClosing()) {
         return true;
     }
-    const $TopModal = modalVisibleAggregate.sort((a, b) => {
+    const $TopModal = modalVisibleAggregate.map(m => {
+        return !m.$props.ignoreRemoveLast
+    }).sort((a, b) => {
         return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
     })[0];
     if ($TopModal) {

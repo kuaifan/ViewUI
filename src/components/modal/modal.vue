@@ -157,6 +157,11 @@
                 type: Boolean,
                 default: false
             },
+            // 忽略集合触发 removeLast 关闭
+            ignoreRemoveLast: {
+                type: Boolean,
+                default: false
+            },
             zIndex: {
                 type: Number,
                 default: 1000
