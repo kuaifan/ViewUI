@@ -79,8 +79,13 @@
                 type: String
             },
             className: {
-                type: String
-            }
+                type: String,
+                default: ''
+            },
+            contentStyle: {
+                type: Object,
+                default: null
+            },
         },
         data () {
             return {
@@ -165,6 +170,9 @@
                 return style;
             },
             contentStyles () {
+                if (this.contentStyle) {
+                    return this.contentStyle;
+                }
                 let style = {};
                 const labelWidth = this.labelWidth === 0 || this.labelWidth ? this.labelWidth : this.FormInstance.labelWidth;
 
