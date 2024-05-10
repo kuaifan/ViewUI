@@ -77,6 +77,9 @@
             },
             labelFor: {
                 type: String
+            },
+            className: {
+                type: String
             }
         },
         data () {
@@ -117,7 +120,7 @@
         inject: ['FormInstance'],
         computed: {
             classes () {
-                return [
+                const classes = [
                     `${prefixCls}`,
                     {
                         [`${prefixCls}-required`]: this.required || this.isRequired,
@@ -125,6 +128,10 @@
                         [`${prefixCls}-validating`]: this.validateState === 'validating'
                     }
                 ];
+                if (this.className) {
+                    classes.push(this.className);
+                }
+                return classes;
             },
             form() {
                let parent = this.$parent;
