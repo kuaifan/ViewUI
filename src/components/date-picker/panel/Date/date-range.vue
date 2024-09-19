@@ -244,6 +244,13 @@
                 if (currentView === 'year' && isSameYear){
                     this.changePanelDate('right', 'FullYear', 10);
                 }
+
+                if (this.currentView === 'time') {
+                    this.$nextTick(() => {
+                        this.$refs.timePicker.$refs.timeSpinner.updateScroll();
+                        this.$refs.timePicker.$refs.timeSpinnerEnd.updateScroll();
+                    });
+                }
             },
             selectionMode(type){
                 this.currentView = type || 'range';
