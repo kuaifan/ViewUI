@@ -28124,20 +28124,27 @@ exports.default = {
             activeKey: this.value,
             focusedKey: this.value,
             showSlot: false,
-            navStyle: {
-                transform: ''
-            },
+            transformX: '',
             scrollable: false,
             transitioning: false,
             contextMenuVisible: false,
             contextMenuStyles: {
                 top: 0,
                 left: 0
-            }
+            },
+
+            isSliding: false,
+            lastPosition: 0
         };
     },
 
     computed: {
+        navStyle: function navStyle() {
+            return {
+                transform: this.transformX,
+                transition: 'transform .2s cubic-bezier(.34,.69,.1,1)'
+            };
+        },
         classes: function classes() {
             var _ref;
 
@@ -28432,6 +28439,47 @@ exports.default = {
                 return false;
             }
         },
+        onTouchstart: function onTouchstart(e) {
+            if (!this.scrollable) {
+                return;
+            }
+            if (e instanceof TouchEvent) {
+                this.isSliding = true;
+                this.lastPosition = e.touches[0].clientX;
+                document.documentElement.addEventListener('touchmove', this.onTouchmove, { passive: false });
+                window.addEventListener('touchend', this.onTouchend, { passive: false });
+            }
+        },
+        onTouchmove: function onTouchmove(e) {
+            if (!this.isSliding) {
+                return;
+            }
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+            var currentPosition = e.touches[0].clientX;
+            var delta = currentPosition - this.lastPosition;
+            if (delta === 0) return;
+
+            var navWidth = this.$refs.nav.offsetWidth;
+            var containerWidth = this.$refs.navScroll.offsetWidth;
+            var currentOffset = this.getCurrentScrollOffset();
+            if (delta > 0) {
+                if (!currentOffset) return;
+            } else {
+                if (navWidth - currentOffset <= containerWidth) return;
+            }
+            this.setOffset(Math.max(currentOffset - delta, 0));
+            this.lastPosition = currentPosition;
+        },
+        onTouchend: function onTouchend() {
+            if (!this.isSliding) {
+                return;
+            }
+            this.isSliding = false;
+            document.documentElement.removeEventListener('touchmove', this.onTouchmove, false);
+            window.removeEventListener('touchend', this.onTouchend, false);
+        },
         scrollPrev: function scrollPrev() {
             var containerWidth = this.$refs.navScroll.offsetWidth;
             var currentOffset = this.getCurrentScrollOffset();
@@ -28453,9 +28501,9 @@ exports.default = {
             this.setOffset(newOffset);
         },
         getCurrentScrollOffset: function getCurrentScrollOffset() {
-            var navStyle = this.navStyle;
+            var transformX = this.transformX;
 
-            return navStyle.transform ? Number(navStyle.transform.match(/translateX\(-(\d+(\.\d+)*)px\)/)[1]) : 0;
+            return transformX ? Number(transformX.match(/translateX\(-(\d+(\.\d+)*)px\)/)[1]) : 0;
         },
         getTabIndex: function getTabIndex(name) {
             var _this9 = this;
@@ -28466,7 +28514,7 @@ exports.default = {
             }.bind(this));
         },
         setOffset: function setOffset(value) {
-            this.navStyle.transform = 'translateX(-' + String(value) + 'px)';
+            this.transformX = 'translateX(-' + String(value) + 'px)';
         },
         scrollToActiveTab: function scrollToActiveTab() {
             if (!this.scrollable) return;
@@ -31543,7 +31591,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-56',
+    version: '4.7.0-58',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -45514,8 +45562,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue__ = __webpack_require__(243);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue__);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_55663b3b_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__ = __webpack_require__(586);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_55663b3b_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_55663b3b_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_3314b2a9_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__ = __webpack_require__(586);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_3314b2a9_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_3314b2a9_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__ = __webpack_require__(0);
 /* script */
 
@@ -45533,8 +45581,8 @@ var __vue_module_identifier__ = null
 
 var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_tabs_vue___default.a,
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_55663b3b_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__["render"],
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_55663b3b_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__["staticRenderFns"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_3314b2a9_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__["render"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_3314b2a9_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_tabs_vue__["staticRenderFns"],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -45559,7 +45607,7 @@ var render = function render() {
         if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "space", 32, $event.key, [" ", "Spacebar"])) {
           return null;
         }$event.preventDefault();return _vm.handleTabKeyboardSelect(false);
-      }] } }, [_c('div', { ref: "navWrap", class: [_vm.prefixCls + '-nav-wrap', _vm.scrollable ? _vm.prefixCls + '-nav-scrollable' : ''] }, [_c('span', { class: [_vm.prefixCls + '-nav-prev', _vm.scrollable ? '' : _vm.prefixCls + '-nav-scroll-disabled'], on: { "click": _vm.scrollPrev } }, [_c('Icon', { attrs: { "type": "ios-arrow-back" } })], 1), _vm._v(" "), _c('span', { class: [_vm.prefixCls + '-nav-next', _vm.scrollable ? '' : _vm.prefixCls + '-nav-scroll-disabled'], on: { "click": _vm.scrollNext } }, [_c('Icon', { attrs: { "type": "ios-arrow-forward" } })], 1), _vm._v(" "), _c('div', { ref: "navScroll", class: [_vm.prefixCls + '-nav-scroll'], on: { "DOMMouseScroll": _vm.handleScroll, "mousewheel": _vm.handleScroll } }, [_c('div', { ref: "nav", class: [_vm.prefixCls + '-nav'], style: _vm.navStyle }, [_c('div', { class: _vm.barClasses, style: _vm.barStyle }), _vm._v(" "), _vm._l(_vm.navList, function (item, index) {
+      }] } }, [_c('div', { ref: "navWrap", class: [_vm.prefixCls + '-nav-wrap', _vm.scrollable ? _vm.prefixCls + '-nav-scrollable' : ''], on: { "touchstart": _vm.onTouchstart } }, [_c('span', { class: [_vm.prefixCls + '-nav-prev', _vm.scrollable ? '' : _vm.prefixCls + '-nav-scroll-disabled'], on: { "click": _vm.scrollPrev } }, [_c('Icon', { attrs: { "type": "ios-arrow-back" } })], 1), _vm._v(" "), _c('span', { class: [_vm.prefixCls + '-nav-next', _vm.scrollable ? '' : _vm.prefixCls + '-nav-scroll-disabled'], on: { "click": _vm.scrollNext } }, [_c('Icon', { attrs: { "type": "ios-arrow-forward" } })], 1), _vm._v(" "), _c('div', { ref: "navScroll", class: [_vm.prefixCls + '-nav-scroll'], on: { "DOMMouseScroll": _vm.handleScroll, "mousewheel": _vm.handleScroll } }, [_c('div', { ref: "nav", class: [_vm.prefixCls + '-nav'], style: _vm.navStyle }, [_c('div', { class: _vm.barClasses, style: _vm.barStyle }), _vm._v(" "), _vm._l(_vm.navList, function (item, index) {
     return _c('div', { class: _vm.tabCls(item), attrs: { "draggable": _vm.draggable }, on: { "click": function click($event) {
           return _vm.handleChange(index);
         }, "dblclick": function dblclick($event) {

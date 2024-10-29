@@ -9,7 +9,7 @@
                 @keydown="handleTabKeyNavigation"
                 @keydown.space.prevent="handleTabKeyboardSelect(false)"
             >
-                <div ref="navWrap" :class="[prefixCls + '-nav-wrap', scrollable ? prefixCls + '-nav-scrollable' : '']" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchend="onTouchend">
+                <div ref="navWrap" :class="[prefixCls + '-nav-wrap', scrollable ? prefixCls + '-nav-scrollable' : '']" @touchstart="onTouchstart">
                     <span :class="[prefixCls + '-nav-prev', scrollable ? '' : prefixCls + '-nav-scroll-disabled']" @click="scrollPrev"><Icon type="ios-arrow-back"></Icon></span>
                     <span :class="[prefixCls + '-nav-next', scrollable ? '' : prefixCls + '-nav-scroll-disabled']" @click="scrollNext"><Icon type="ios-arrow-forward"></Icon></span>
                     <div ref="navScroll" :class="[prefixCls + '-nav-scroll']" @DOMMouseScroll="handleScroll" @mousewheel="handleScroll">
@@ -157,7 +157,7 @@
             navStyle () {
                 return {
                     transform: this.transformX,
-                    transition: this.isSliding ? 'none' : 'transform 0.5s ease-in-out'
+                    transition: 'transform .2s cubic-bezier(.34,.69,.1,1)'
                 };
             },
             classes () {
@@ -439,18 +439,23 @@
                 }
             },
             onTouchstart(e) {
-                if (!this.scrollable) return;
+                if (!this.scrollable) {
+                    return;
+                }
                 if (e instanceof TouchEvent) {
-                    e.preventDefault();
                     this.isSliding = true;
                     this.lastPosition = e.touches[0].clientX;
+                    document.documentElement.addEventListener('touchmove', this.onTouchmove, { passive: false });
+                    window.addEventListener('touchend', this.onTouchend, { passive: false });
                 }
             },
             onTouchmove(e) {
                 if (!this.isSliding) {
                     return;
                 }
-                e.preventDefault();
+                if (e.cancelable) {
+                    e.preventDefault();
+                }
                 const currentPosition = e.touches[0].clientX;
                 const delta = currentPosition - this.lastPosition;
                 if (delta === 0) return;
@@ -467,7 +472,12 @@
                 this.lastPosition = currentPosition;
             },
             onTouchend() {
+                if (!this.isSliding) {
+                    return;
+                }
                 this.isSliding = false;
+                document.documentElement.removeEventListener('touchmove', this.onTouchmove, false);
+                window.removeEventListener('touchend', this.onTouchend, false);
             },
             scrollPrev() {
                 const containerWidth = this.$refs.navScroll.offsetWidth;
