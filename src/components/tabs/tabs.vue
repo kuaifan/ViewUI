@@ -9,7 +9,7 @@
                 @keydown="handleTabKeyNavigation"
                 @keydown.space.prevent="handleTabKeyboardSelect(false)"
             >
-                <div ref="navWrap" :class="[prefixCls + '-nav-wrap', scrollable ? prefixCls + '-nav-scrollable' : '']">
+                <div ref="navWrap" :class="[prefixCls + '-nav-wrap', scrollable ? prefixCls + '-nav-scrollable' : '']" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchend="onTouchend">
                     <span :class="[prefixCls + '-nav-prev', scrollable ? '' : prefixCls + '-nav-scroll-disabled']" @click="scrollPrev"><Icon type="ios-arrow-back"></Icon></span>
                     <span :class="[prefixCls + '-nav-next', scrollable ? '' : prefixCls + '-nav-scroll-disabled']" @click="scrollNext"><Icon type="ios-arrow-forward"></Icon></span>
                     <div ref="navScroll" :class="[prefixCls + '-nav-scroll']" @DOMMouseScroll="handleScroll" @mousewheel="handleScroll">
@@ -140,19 +140,26 @@
                 activeKey: this.value,
                 focusedKey: this.value,
                 showSlot: false,
-                navStyle: {
-                    transform: ''
-                },
+                transformX: '',
                 scrollable: false,
                 transitioning: false,
                 contextMenuVisible: false,
                 contextMenuStyles: {
                     top: 0,
                     left: 0
-                }
+                },
+
+                isSliding: false,
+                lastPosition: 0,
             };
         },
         computed: {
+            navStyle () {
+                return {
+                    transform: this.transformX,
+                    transition: this.isSliding ? 'none' : 'transform 0.5s ease-in-out'
+                };
+            },
             classes () {
                 return [
                     `${prefixCls}`,
@@ -431,6 +438,37 @@
                     return false;
                 }
             },
+            onTouchstart(e) {
+                if (!this.scrollable) return;
+                if (e instanceof TouchEvent) {
+                    e.preventDefault();
+                    this.isSliding = true;
+                    this.lastPosition = e.touches[0].clientX;
+                }
+            },
+            onTouchmove(e) {
+                if (!this.isSliding) {
+                    return;
+                }
+                e.preventDefault();
+                const currentPosition = e.touches[0].clientX;
+                const delta = currentPosition - this.lastPosition;
+                if (delta === 0) return;
+
+                const navWidth = this.$refs.nav.offsetWidth;
+                const containerWidth = this.$refs.navScroll.offsetWidth;
+                const currentOffset = this.getCurrentScrollOffset();
+                if (delta > 0) {
+                    if (!currentOffset) return;
+                } else {
+                    if (navWidth - currentOffset <= containerWidth) return;
+                }
+                this.setOffset(Math.max(currentOffset - delta, 0));
+                this.lastPosition = currentPosition;
+            },
+            onTouchend() {
+                this.isSliding = false;
+            },
             scrollPrev() {
                 const containerWidth = this.$refs.navScroll.offsetWidth;
                 const currentOffset = this.getCurrentScrollOffset();
@@ -456,16 +494,16 @@
                 this.setOffset(newOffset);
             },
             getCurrentScrollOffset() {
-                const { navStyle } = this;
-                return navStyle.transform
-                    ? Number(navStyle.transform.match(/translateX\(-(\d+(\.\d+)*)px\)/)[1])
+                const { transformX } = this;
+                return transformX
+                    ? Number(transformX.match(/translateX\(-(\d+(\.\d+)*)px\)/)[1])
                     : 0;
             },
             getTabIndex(name){
                 return this.navList.findIndex(nav => nav.name === name);
             },
             setOffset(value) {
-                this.navStyle.transform = `translateX(-${value}px)`;
+                this.transformX = `translateX(-${value}px)`;
             },
             scrollToActiveTab() {
                 if (!this.scrollable) return;
