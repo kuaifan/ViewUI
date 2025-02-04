@@ -31,7 +31,8 @@
                 :disabled="itemDisabled"
                 :size="size"
                 :icon="inputIcon"
-                @on-click="handleClear"
+                @on-keyup="handleKeyUp"
+                @on-click="handleClick"
                 @on-focus="handleFocus"
                 @on-blur="handleBlur"></i-input>
         </slot>
@@ -183,6 +184,13 @@
             },
             handleBlur (event) {
                 this.$emit('on-blur', event);
+            },
+            handleKeyUp (event) {
+                this.$emit('on-keyup', event);
+            },
+            handleClick () {
+                this.$emit('on-click');
+                this.handleClear();
             },
             handleClear () {
                 if (!this.clearable) return;
