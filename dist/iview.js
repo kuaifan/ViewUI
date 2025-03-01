@@ -2906,8 +2906,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue__ = __webpack_require__(110);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue__);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d61ce82_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d61ce82_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d61ce82_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_72bbd8d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__ = __webpack_require__(328);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_72bbd8d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_72bbd8d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__ = __webpack_require__(0);
 /* script */
 
@@ -2925,8 +2925,8 @@ var __vue_module_identifier__ = null
 
 var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_select_vue___default.a,
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d61ce82_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__["render"],
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7d61ce82_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__["staticRenderFns"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_72bbd8d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__["render"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_72bbd8d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_select_vue__["staticRenderFns"],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -5335,6 +5335,8 @@ exports.default = {
             type: Number
         },
 
+        multipleMaxBefore: Function,
+
         multipleUncancelable: {
             type: Array,
             default: function _default() {
@@ -6131,8 +6133,29 @@ exports.default = {
             }
         },
         values: function values(now, before) {
+            var _this13 = this;
+
             if (this.multiple && this.multipleMax !== undefined && now.length > this.multipleMax) {
-                this.values = now.slice(this.multipleMax * -1);
+                if (!this.multipleMaxBefore) {
+                    this.values = now.slice(this.multipleMax * -1);
+                    return;
+                }
+
+                var _before = this.multipleMaxBefore(this.multipleMax);
+                if (_before && _before.then) {
+                    _before.then(function () {
+                        (0, _newArrowCheck3.default)(this, _this13);
+
+                        this.values = now.slice(this.multipleMax * -1);
+                    }.bind(this)).catch(function () {
+                        (0, _newArrowCheck3.default)(this, _this13);
+
+                        this.values = now.slice(0, this.multipleMax);
+                    }.bind(this));
+                    return;
+                }
+
+                this.values = _before ? now.slice(this.multipleMax * -1) : now.slice(0, this.multipleMax);
                 return;
             }
             var newValue = (0, _stringify2.default)(now);
@@ -6158,7 +6181,7 @@ exports.default = {
             }
         },
         query: function query(_query) {
-            var _this13 = this;
+            var _this14 = this;
 
             this.$emit('on-query-change', _query);
             var remoteMethod = this.remoteMethod,
@@ -6174,7 +6197,7 @@ exports.default = {
                 this.initialLabel = '';
                 if (promise && promise.then) {
                     promise.then(function (options) {
-                        (0, _newArrowCheck3.default)(this, _this13);
+                        (0, _newArrowCheck3.default)(this, _this14);
 
                         if (options) this.options = options;
                     }.bind(this));
@@ -6203,14 +6226,14 @@ exports.default = {
             }
         },
         focusIndex: function focusIndex(index) {
-            var _this14 = this;
+            var _this15 = this;
 
             if (index < 0 || this.autoComplete) return;
 
             var optionValue = this.flatOptions[index].componentOptions.propsData.value;
             var optionInstance = findChild(this, function (_ref12) {
                 var $options = _ref12.$options;
-                (0, _newArrowCheck3.default)(this, _this14);
+                (0, _newArrowCheck3.default)(this, _this15);
 
                 return $options.componentName === 'select-item' && $options.propsData.value === optionValue;
             }.bind(this));
@@ -31605,7 +31628,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-60',
+    version: '4.7.0-61',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,

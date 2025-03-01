@@ -207,6 +207,8 @@
             multipleMax: {
                 type: Number
             },
+            // 4.5.0-61
+            multipleMaxBefore: Function,
             // 4.5.0-11
             multipleUncancelable: {
                 type: Array,
@@ -923,7 +925,22 @@
             },
             values(now, before){
                 if (this.multiple && this.multipleMax !== undefined && now.length > this.multipleMax) {
-                    this.values = now.slice(this.multipleMax * -1);
+                    if (!this.multipleMaxBefore) {
+                        this.values = now.slice(this.multipleMax * -1);
+                        return;
+                    }
+
+                    const before = this.multipleMaxBefore(this.multipleMax);
+                    if (before && before.then) {
+                        before.then(() => {
+                            this.values = now.slice(this.multipleMax * -1);
+                        }).catch(() => {
+                            this.values = now.slice(0, this.multipleMax);
+                        });
+                        return;
+                    }
+
+                    this.values = before ? now.slice(this.multipleMax * -1) : now.slice(0, this.multipleMax);
                     return;
                 }
                 const newValue = JSON.stringify(now);
