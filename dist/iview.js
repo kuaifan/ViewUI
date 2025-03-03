@@ -22430,7 +22430,7 @@ exports.default = {
             }
             if (this.visible && this.closable) {
                 if (e.keyCode === 27) {
-                    var $Modals = (0, _assist.findComponentsDownward)(this.$root, 'Modal').filter(function (item) {
+                    var $Modals = (0, _assist.findComponentsDownward)(this.$root, this.$options.name).filter(function (item) {
                         (0, _newArrowCheck3.default)(this, _this3);
                         return item.$data.visible && item.$props.closable;
                     }.bind(this));
@@ -31672,7 +31672,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-67',
+    version: '4.7.0-68',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,

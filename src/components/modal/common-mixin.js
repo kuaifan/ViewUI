@@ -308,7 +308,7 @@ export default {
             }
             if (this.visible && this.closable) {
                 if (e.keyCode === 27) {
-                    const $Modals = findComponentsDownward(this.$root, 'Modal').filter(item => item.$data.visible && item.$props.closable);
+                    const $Modals = findComponentsDownward(this.$root, this.$options.name).filter(item => item.$data.visible && item.$props.closable);
 
                     const $TopModal = $Modals.sort((a, b) => {
                         return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
