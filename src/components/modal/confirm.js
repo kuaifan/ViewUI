@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Modal from './modal.vue';
+import ModalAlive from './modal-alive.vue';
 import Button from '../button/button.vue';
 import Locale from '../../mixins/locale';
 
@@ -319,5 +320,7 @@ Modal.newInstance = properties => {
         component: modal
     };
 };
+
+Modal.Alive = ModalAlive
 
 export default Modal;

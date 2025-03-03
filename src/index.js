@@ -112,6 +112,7 @@ const components = {
     MenuItem: Menu.Item,
     Message,
     Modal,
+    ModalAlive: Modal.Alive,
     Notice,
     Option: Option,
     OptionGroup,
