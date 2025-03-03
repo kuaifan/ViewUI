@@ -1,11 +1,11 @@
 <template>
     <div v-transfer-dom :data-transfer="transfer">
         <transition :name="transitionNames[1]">
-            <div v-if="visible && showMask" :class="maskClasses" :style="wrapStyles" @click="handleMask"></div>
+            <div v-if="(visible || contentAlive) && showMask" v-show="visible || !contentAlive" :class="maskClasses" :style="wrapStyles" @click="handleMask"></div>
         </transition>
         <div :class="wrapClasses" :style="wrapStyles" @click="handleWrapClick">
             <transition :name="transitionNames[0]" @after-leave="animationFinish">
-                <div v-if="visible" :class="classes" :style="mainStyles" @mousedown="handleMousedown">
+                <div v-if="visible || contentAlive" v-show="visible || !contentAlive" :class="classes" :style="mainStyles" @mousedown="handleMousedown">
                     <div :class="contentClasses" ref="content" :style="contentStyles" @click="handleClickModal">
                         <a :class="[prefixCls + '-close']" v-if="closable" @click="close">
                             <slot name="close">
@@ -159,6 +159,11 @@
             },
             // 忽略集合触发 removeLast 关闭
             ignoreRemoveLast: {
+                type: Boolean,
+                default: false
+            },
+            // 4.7.0-62 内容是否保持活性（关闭Modal时不销毁内容）
+            contentAlive: {
                 type: Boolean,
                 default: false
             },
