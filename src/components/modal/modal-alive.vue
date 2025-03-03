@@ -1,11 +1,11 @@
 <template>
     <div v-transfer-dom :data-transfer="transfer">
         <transition :name="transitionNames[1]">
-            <div v-if="visible && showMask" :class="maskClasses" :style="wrapStyles" @click="handleMask"></div>
+            <div :class="maskClasses" :style="wrapStyles" v-show="visible" v-if="showMask" @click="handleMask"></div>
         </transition>
         <div :class="wrapClasses" :style="wrapStyles" @click="handleWrapClick">
             <transition :name="transitionNames[0]" @after-leave="animationFinish">
-                <div v-if="visible" :class="classes" :style="mainStyles" @mousedown="handleMousedown">
+                <div :class="classes" :style="mainStyles" v-show="visible" @mousedown="handleMousedown">
                     <div :class="contentClasses" ref="content" :style="contentStyles" @click="handleClickModal">
                         <a :class="[prefixCls + '-close']" v-if="closable" @click="close">
                             <slot name="close">
@@ -33,7 +33,7 @@
 import CommonMixin from './common-mixin.js'
 
 export default {
-    name: 'Modal',
+    name: 'ModalAlive',
     mixins: [CommonMixin],
 }
 </script>
