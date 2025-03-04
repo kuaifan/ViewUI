@@ -13,7 +13,9 @@ import {
     transferIncrease as modalIncrease,
     lastVisibleIndex,
     lastVisibleIncrease,
-    modalVisibleAggregate, hasTransferIndex
+    modalVisibleAggregate,
+    modalVisibleListens,
+    hasTransferIndex
 } from '../../utils/transfer-queue';
 
 const prefixCls = 'ivu-modal';
@@ -476,9 +478,15 @@ export default {
                         cancel: this.cancel,
                         shake: this.shake
                     });
+                    modalVisibleListens.forEach(cb => {
+                        cb(true);
+                    })
                 }
                 if (!val && index > -1) {
                     modalVisibleAggregate.splice(index, 1);
+                    modalVisibleListens.forEach(cb => {
+                        cb(false);
+                    })
                 }
             }
             //

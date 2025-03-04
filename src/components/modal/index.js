@@ -1,5 +1,5 @@
 import Modal from './confirm';
-import { resetIncrease, modalVisibleAggregate, modalVisibleWaitList, modalConfirmGroup, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
+import { resetIncrease, modalVisibleAggregate, modalVisibleListens, modalVisibleWaitList, modalConfirmGroup, onModalVisibleClear, onModalVisibleClosing } from '../../utils/transfer-queue';
 
 let modalInstance;
 
@@ -109,6 +109,17 @@ Modal.resetIndex = function () {
 Modal.visibles = function () {
     onModalVisibleClear()
     return modalVisibleAggregate;
+};
+
+Modal.addVisibleListener = function (cb) {
+    typeof cb === "function" && modalVisibleListens.push(cb);
+};
+
+Modal.removeVisibleListener = function (cb) {
+    const index = modalVisibleListens.indexOf(cb);
+    if (index > -1) {
+        modalVisibleListens.splice(index, 1);
+    }
 };
 
 Modal.removeLast = function () {

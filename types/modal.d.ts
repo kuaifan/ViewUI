@@ -165,7 +165,17 @@ export declare class ModalInstance extends Modal {
     /**
      * 可见列表
      */
-    visibles(): Array<this>;
+    visibles(): this[];
+    /**
+     * 添加可见监听
+     * @param cb
+     */
+    addVisibleListener(cb: (visible: boolean) => void): void;
+    /**
+     * 移除可见监听
+     * @param cb
+     */
+    removeVisibleListener(cb: (visible: boolean) => void): void;
     /**
      * 移除最上层Modal
      */

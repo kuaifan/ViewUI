@@ -1,6 +1,7 @@
 let transferIndex = 0;
 let lastVisibleIndex = 0;
 let modalVisibleAggregate = [];
+let modalVisibleListens = [];
 let modalVisibleClosing = false;
 
 let modalVisibleWaitList = [];
@@ -57,4 +58,4 @@ function onModalVisibleClosing() {
     return true;
 }
 
-export { transferIndex, transferIncrease, getTransferIndex, hasTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, onModalVisibleClear, onModalVisibleClosing, modalVisibleWaitList, modalConfirmGroup};
+export { transferIndex, transferIncrease, getTransferIndex, hasTransferIndex, lastVisibleIndex, lastVisibleIncrease, resetIncrease, modalVisibleAggregate, modalVisibleListens, onModalVisibleClear, onModalVisibleClosing, modalVisibleWaitList, modalConfirmGroup};

@@ -1680,7 +1680,7 @@ exports.default = _assign2.default || function (target) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.modalConfirmGroup = exports.modalVisibleWaitList = exports.onModalVisibleClosing = exports.onModalVisibleClear = exports.modalVisibleAggregate = exports.resetIncrease = exports.lastVisibleIncrease = exports.lastVisibleIndex = exports.hasTransferIndex = exports.getTransferIndex = exports.transferIncrease = exports.transferIndex = undefined;
+exports.modalConfirmGroup = exports.modalVisibleWaitList = exports.onModalVisibleClosing = exports.onModalVisibleClear = exports.modalVisibleListens = exports.modalVisibleAggregate = exports.resetIncrease = exports.lastVisibleIncrease = exports.lastVisibleIndex = exports.hasTransferIndex = exports.getTransferIndex = exports.transferIncrease = exports.transferIndex = undefined;
 
 var _newArrowCheck2 = __webpack_require__(1);
 
@@ -1691,6 +1691,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var transferIndex = 0;
 var lastVisibleIndex = 0;
 var modalVisibleAggregate = [];
+var modalVisibleListens = [];
 var modalVisibleClosing = false;
 
 var modalVisibleWaitList = [];
@@ -1765,6 +1766,7 @@ exports.lastVisibleIndex = lastVisibleIndex;
 exports.lastVisibleIncrease = lastVisibleIncrease;
 exports.resetIncrease = resetIncrease;
 exports.modalVisibleAggregate = modalVisibleAggregate;
+exports.modalVisibleListens = modalVisibleListens;
 exports.onModalVisibleClear = onModalVisibleClear;
 exports.onModalVisibleClosing = onModalVisibleClosing;
 exports.modalVisibleWaitList = modalVisibleWaitList;
@@ -22621,9 +22623,19 @@ exports.default = {
                         cancel: this.cancel,
                         shake: this.shake
                     });
+                    _transferQueue.modalVisibleListens.forEach(function (cb) {
+                        (0, _newArrowCheck3.default)(this, _this6);
+
+                        cb(true);
+                    }.bind(this));
                 }
                 if (!val && index > -1) {
                     _transferQueue.modalVisibleAggregate.splice(index, 1);
+                    _transferQueue.modalVisibleListens.forEach(function (cb) {
+                        (0, _newArrowCheck3.default)(this, _this6);
+
+                        cb(false);
+                    }.bind(this));
                 }
             }
 
@@ -31672,7 +31684,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-68',
+    version: '4.7.0-69',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -41325,6 +41337,17 @@ _confirm2.default.resetIndex = function () {
 _confirm2.default.visibles = function () {
     (0, _transferQueue.onModalVisibleClear)();
     return _transferQueue.modalVisibleAggregate;
+};
+
+_confirm2.default.addVisibleListener = function (cb) {
+    typeof cb === "function" && _transferQueue.modalVisibleListens.push(cb);
+};
+
+_confirm2.default.removeVisibleListener = function (cb) {
+    var index = _transferQueue.modalVisibleListens.indexOf(cb);
+    if (index > -1) {
+        _transferQueue.modalVisibleListens.splice(index, 1);
+    }
 };
 
 _confirm2.default.removeLast = function () {
