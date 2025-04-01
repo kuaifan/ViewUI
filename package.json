@@ -1,6 +1,6 @@
 {
     "name": "view-design-hi",
-    "version": "4.7.0-70",
+    "version": "4.7.0-71",
     "title": "ViewUI",
     "description": "A high quality UI components Library with Vue.js",
     "homepage": "http://www.iviewui.com",
@@ -52,7 +52,7 @@
         "lodash.throttle": "^4.1.1",
         "popper.js": "^1.14.6",
         "tinycolor2": "^1.4.1",
-        "v-click-outside-x": "^3.7.1"
+        "v-click-outside-x": "^4.1.3"
     },
     "peerDependencies": {
         "vue": "^2.6.10"
