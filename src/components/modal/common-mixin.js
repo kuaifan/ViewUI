@@ -431,15 +431,16 @@ export default {
         },
         handleClickModal () {
             if (this.draggable) {
-                this.handleMoveTop();
+                if (lastVisibleIndex !== this.lastVisibleIndex){
+                    this.lastVisibleIndex = lastVisibleIndex;
+                    return;
+                }
+                this.modalIndex = this.handleGetModalIndex();
             }
         },
         handleMoveTop() {
-            if (lastVisibleIndex !== this.lastVisibleIndex){
-                this.lastVisibleIndex = lastVisibleIndex;
-                return;
-            }
             this.modalIndex = this.handleGetModalIndex();
+            lastVisibleIncrease();
         },
     },
     mounted () {
@@ -498,8 +499,7 @@ export default {
                 }, 300);
             } else {
                 if (this.lastVisible !== val) {
-                    this.modalIndex = this.handleGetModalIndex();
-                    lastVisibleIncrease();
+                    this.handleMoveTop();
                 }
 
                 if (this.timer) clearTimeout(this.timer);
