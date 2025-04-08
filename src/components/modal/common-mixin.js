@@ -131,6 +131,10 @@ export default {
             type: Boolean,
             default: false
         },
+        // 用于回调 VisibleListener
+        tag: {
+            default: null
+        },
         zIndex: {
             type: Number,
             default: 1000
@@ -473,6 +477,7 @@ export default {
                 if (val && index === -1) {
                     modalVisibleAggregate.push({
                         _uid: this._uid,
+                        tag: this.tag,
                         $data: this.$data,
                         $props: this.$props,
                         ok: this.ok,
@@ -480,13 +485,23 @@ export default {
                         shake: this.shake
                     });
                     modalVisibleListens.forEach(cb => {
-                        cb(true);
+                        cb(true, {
+                            _uid: this._uid,
+                            tag: this.tag,
+                            mask: this.mask,
+                            visible: this.visible,
+                        });
                     })
                 }
                 if (!val && index > -1) {
                     modalVisibleAggregate.splice(index, 1);
                     modalVisibleListens.forEach(cb => {
-                        cb(false);
+                        cb(false, {
+                            _uid: this._uid,
+                            tag: this.tag,
+                            mask: this.mask,
+                            visible: this.visible,
+                        });
                     })
                 }
             }
