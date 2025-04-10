@@ -54,28 +54,13 @@
             },
             className: {
                 type: String
-            },
-            followScrollY: {
-                type: Boolean,
-                default: true
-            },
+            }
         },
         data () {
             return {
                 notices: [],
-                tIndex: this.handleGetIndex(),
-                localScrollY: 0,
+                tIndex: this.handleGetIndex()
             };
-        },
-        mounted() {
-            if (this.followScrollY) {
-                window.addEventListener('scroll', this.windowScrollListener);
-            }
-        },
-        beforeDestroy() {
-            if (this.followScrollY) {
-                window.removeEventListener('scroll', this.windowScrollListener);
-            }
         },
         computed: {
             classes () {
@@ -89,9 +74,7 @@
             wrapStyles () {
                 let styles = Object.assign({}, this.styles);
                 styles['z-index'] = hasTransferIndex(this.tIndex, 1010 + this.tIndex);
-                if (this.followScrollY) {
-                    styles['margin-top'] = Math.max(0, this.localScrollY) + 'px';
-                }
+
                 return styles;
             }
         },
@@ -127,9 +110,6 @@
             handleGetIndex () {
                 transferIncrease();
                 return getTransferIndex();
-            },
-            windowScrollListener() {
-                this.localScrollY = window.scrollY
             },
         }
     };
