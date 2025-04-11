@@ -106,7 +106,7 @@ Modal.resetIndex = function () {
     resetIncrease();
 };
 
-Modal.visibles = function () {
+Modal.visibleList = function () {
     onModalVisibleClear()
     return modalVisibleAggregate;
 };

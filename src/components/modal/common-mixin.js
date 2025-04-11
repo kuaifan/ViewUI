@@ -329,9 +329,7 @@ export default {
         CheckEnterOk(e) {
             if (this.visible) {
                 if (e.keyCode === 13) {
-                    const $TopModal = modalVisibleAggregate.sort((a, b) => {
-                        return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
-                    })[0];
+                    const $TopModal = this.getTopModal();
                     if ($TopModal.$props.enterOk) {
                         e.preventDefault()
                         $TopModal.ok()
@@ -344,9 +342,7 @@ export default {
         EscCheckClose (e) {
             if (this.visible) {
                 if (e.keyCode === 27) {
-                    const $TopModal = modalVisibleAggregate.sort((a, b) => {
-                        return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
-                    })[0];
+                    const $TopModal = this.getTopModal();
                     if (!$TopModal.$props.closable) {
                         $TopModal.shake();
                         return;
@@ -445,6 +441,15 @@ export default {
         handleMoveTop() {
             this.modalIndex = this.handleGetModalIndex();
             lastVisibleIncrease();
+        },
+        getTopModal() {
+            return modalVisibleAggregate.sort((a, b) => {
+                return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
+            })[0]
+        },
+        isTopModal () {
+            const $TopModal = this.getTopModal();
+            return !!($TopModal && $TopModal._uid === this._uid);
         },
     },
     mounted () {

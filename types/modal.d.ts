@@ -165,7 +165,7 @@ export declare class ModalInstance extends Modal {
     /**
      * 可见列表
      */
-    visibles(): this[];
+    visibleList(): this[];
     /**
      * 添加可见监听
      * @param cb

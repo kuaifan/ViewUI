@@ -22443,15 +22443,9 @@ exports.default = {
             }
         },
         CheckEnterOk: function CheckEnterOk(e) {
-            var _this4 = this;
-
             if (this.visible) {
                 if (e.keyCode === 13) {
-                    var $TopModal = _transferQueue.modalVisibleAggregate.sort(function (a, b) {
-                        (0, _newArrowCheck3.default)(this, _this4);
-
-                        return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
-                    }.bind(this))[0];
+                    var $TopModal = this.getTopModal();
                     if ($TopModal.$props.enterOk) {
                         e.preventDefault();
                         $TopModal.ok();
@@ -22462,22 +22456,18 @@ exports.default = {
             return false;
         },
         EscCheckClose: function EscCheckClose(e) {
-            var _this5 = this;
+            var _this4 = this;
 
             if (this.visible) {
                 if (e.keyCode === 27) {
-                    var $TopModal = _transferQueue.modalVisibleAggregate.sort(function (a, b) {
-                        (0, _newArrowCheck3.default)(this, _this5);
-
-                        return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
-                    }.bind(this))[0];
+                    var $TopModal = this.getTopModal();
                     if (!$TopModal.$props.closable) {
                         $TopModal.shake();
                         return;
                     }
 
                     setTimeout(function () {
-                        (0, _newArrowCheck3.default)(this, _this5);
+                        (0, _newArrowCheck3.default)(this, _this4);
 
                         $TopModal.cancel();
                     }.bind(this), 0);
@@ -22571,6 +22561,19 @@ exports.default = {
         handleMoveTop: function handleMoveTop() {
             this.modalIndex = this.handleGetModalIndex();
             (0, _transferQueue.lastVisibleIncrease)();
+        },
+        getTopModal: function getTopModal() {
+            var _this5 = this;
+
+            return _transferQueue.modalVisibleAggregate.sort(function (a, b) {
+                (0, _newArrowCheck3.default)(this, _this5);
+
+                return a.$data.modalIndex < b.$data.modalIndex ? 1 : -1;
+            }.bind(this))[0];
+        },
+        isTopModal: function isTopModal() {
+            var $TopModal = this.getTopModal();
+            return !!($TopModal && $TopModal._uid === this._uid);
         }
     },
     mounted: function mounted() {
@@ -31686,7 +31689,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-75',
+    version: '4.7.0-76',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -41331,7 +41334,7 @@ _confirm2.default.resetIndex = function () {
     (0, _transferQueue.resetIncrease)();
 };
 
-_confirm2.default.visibles = function () {
+_confirm2.default.visibleList = function () {
     (0, _transferQueue.onModalVisibleClear)();
     return _transferQueue.modalVisibleAggregate;
 };
