@@ -30526,6 +30526,10 @@ exports.default = {
         maxSize: {
             type: Number
         },
+        maxConcurrentUploads: {
+            type: Number,
+            default: 3
+        },
         beforeUpload: Function,
         onProgress: {
             type: Function,
@@ -30594,7 +30598,8 @@ exports.default = {
             dragOver: false,
             fileList: [],
             ajaxList: [],
-            tempIndex: 1
+            tempIndex: 1,
+            uploadQueue: []
         };
     },
 
@@ -30690,6 +30695,21 @@ exports.default = {
                     (0, _newArrowCheck3.default)(this, _this3);
                     return item.uid !== uid;
                 }.bind(this));
+                this.processQueue();
+            }
+            var queueLength = this.uploadQueue.length;
+            this.uploadQueue = this.uploadQueue.filter(function (item) {
+                (0, _newArrowCheck3.default)(this, _this3);
+                return item.uid !== uid;
+            }.bind(this));
+            if (queueLength !== this.uploadQueue.length) {
+                var queuedFile = this.fileList.find(function (item) {
+                    (0, _newArrowCheck3.default)(this, _this3);
+                    return item.uid === uid;
+                }.bind(this));
+                if (queuedFile) {
+                    this.handleRemove(queuedFile);
+                }
             }
             return num;
         },
@@ -30716,6 +30736,25 @@ exports.default = {
             }
 
             this.handleStart(file);
+            this.enqueueUpload(file);
+        },
+        getUploadLimit: function getUploadLimit() {
+            if (typeof this.maxConcurrentUploads === 'number' && this.maxConcurrentUploads > 0) {
+                return this.maxConcurrentUploads;
+            }
+            return Infinity;
+        },
+        enqueueUpload: function enqueueUpload(file) {
+            var limit = this.getUploadLimit();
+            if (this.ajaxList.length >= limit) {
+                this.uploadQueue.push(file);
+            } else {
+                this.startUploadRequest(file);
+            }
+        },
+        startUploadRequest: function startUploadRequest(file) {
+            var _this5 = this;
+
             var formData = new FormData();
             formData.append(this.name, file);
 
@@ -30733,42 +30772,53 @@ exports.default = {
                 dataJson = (0, _assign2.default)(dataJson, file.ajaxExtraData);
             }
 
+            var request = (0, _ajax2.default)({
+                headers: this.headers,
+                withCredentials: this.withCredentials,
+                file: file,
+                data: dataJson,
+                filename: this.name,
+                action: this.action,
+                onProgress: function onProgress(e) {
+                    (0, _newArrowCheck3.default)(this, _this5);
+
+                    this.handleProgress(e, file);
+                }.bind(this),
+                onSuccess: function onSuccess(res) {
+                    (0, _newArrowCheck3.default)(this, _this5);
+
+                    this.handleSuccess(res, file);
+                    this.ajaxList = this.ajaxList.filter(function (_ref2) {
+                        var uid = _ref2.uid;
+                        (0, _newArrowCheck3.default)(this, _this5);
+                        return uid !== file.uid;
+                    }.bind(this));
+                    this.processQueue();
+                }.bind(this),
+                onError: function onError(err, response) {
+                    (0, _newArrowCheck3.default)(this, _this5);
+
+                    this.handleError(err, response, file);
+                    this.ajaxList = this.ajaxList.filter(function (_ref3) {
+                        var uid = _ref3.uid;
+                        (0, _newArrowCheck3.default)(this, _this5);
+                        return uid !== file.uid;
+                    }.bind(this));
+                    this.processQueue();
+                }.bind(this)
+            });
+
             this.ajaxList.push({
                 uid: file.uid,
-                request: (0, _ajax2.default)({
-                    headers: this.headers,
-                    withCredentials: this.withCredentials,
-                    file: file,
-                    data: dataJson,
-                    filename: this.name,
-                    action: this.action,
-                    onProgress: function onProgress(e) {
-                        (0, _newArrowCheck3.default)(this, _this4);
-
-                        this.handleProgress(e, file);
-                    }.bind(this),
-                    onSuccess: function onSuccess(res) {
-                        (0, _newArrowCheck3.default)(this, _this4);
-
-                        this.handleSuccess(res, file);
-                        this.ajaxList = this.ajaxList.filter(function (_ref2) {
-                            var uid = _ref2.uid;
-                            (0, _newArrowCheck3.default)(this, _this4);
-                            return uid !== file.uid;
-                        }.bind(this));
-                    }.bind(this),
-                    onError: function onError(err, response) {
-                        (0, _newArrowCheck3.default)(this, _this4);
-
-                        this.handleError(err, response, file);
-                        this.ajaxList = this.ajaxList.filter(function (_ref3) {
-                            var uid = _ref3.uid;
-                            (0, _newArrowCheck3.default)(this, _this4);
-                            return uid !== file.uid;
-                        }.bind(this));
-                    }.bind(this)
-                })
+                request: request
             });
+        },
+        processQueue: function processQueue() {
+            var limit = this.getUploadLimit();
+            while (this.uploadQueue.length && this.ajaxList.length < limit) {
+                var nextFile = this.uploadQueue.shift();
+                this.startUploadRequest(nextFile);
+            }
         },
         handleStart: function handleStart(file) {
             file.uid = Date.now() + this.tempIndex++;
@@ -30784,12 +30834,12 @@ exports.default = {
             this.fileList.push(_file);
         },
         getFile: function getFile(file) {
-            var _this5 = this;
+            var _this6 = this;
 
             var fileList = this.fileList;
             var target = void 0;
             fileList.every(function (item) {
-                (0, _newArrowCheck3.default)(this, _this5);
+                (0, _newArrowCheck3.default)(this, _this6);
 
                 target = file.uid === item.uid ? item : null;
                 return !target;
@@ -30802,7 +30852,7 @@ exports.default = {
             _file.percentage = e.percent || 0;
         },
         handleSuccess: function handleSuccess(res, file) {
-            var _this6 = this;
+            var _this7 = this;
 
             var _file = this.getFile(file);
 
@@ -30814,7 +30864,7 @@ exports.default = {
                 this.dispatch('FormItem', 'on-form-change', _file);
 
                 setTimeout(function () {
-                    (0, _newArrowCheck3.default)(this, _this6);
+                    (0, _newArrowCheck3.default)(this, _this7);
 
                     _file.showProgress = false;
                 }.bind(this), 1000);
@@ -30842,16 +30892,17 @@ exports.default = {
         },
         clearFiles: function clearFiles() {
             this.fileList = [];
+            this.uploadQueue = [];
         }
     },
     watch: {
         defaultFileList: {
             immediate: true,
             handler: function handler(fileList) {
-                var _this7 = this;
+                var _this8 = this;
 
                 this.fileList = fileList.map(function (item) {
-                    (0, _newArrowCheck3.default)(this, _this7);
+                    (0, _newArrowCheck3.default)(this, _this8);
 
                     item.status = 'finished';
                     item.percentage = 100;
@@ -31689,7 +31740,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 var API = (0, _extends3.default)({
-    version: '4.7.0-76',
+    version: '4.7.0-78',
     locale: _index2.default.use,
     i18n: _index2.default.i18n,
     install: install,
@@ -46783,8 +46834,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue__ = __webpack_require__(257);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue__);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7990f996_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__ = __webpack_require__(627);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7990f996_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7990f996_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a1b57d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__ = __webpack_require__(627);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a1b57d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a1b57d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__ = __webpack_require__(0);
 /* script */
 
@@ -46802,8 +46853,8 @@ var __vue_module_identifier__ = null
 
 var Component = Object(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_component_normalizer__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_upload_vue___default.a,
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7990f996_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__["render"],
-  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_7990f996_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__["staticRenderFns"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a1b57d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__["render"],
+  __WEBPACK_IMPORTED_MODULE_1__babel_loader_sourceMap_node_modules_vue_loader_lib_template_compiler_index_id_data_v_2a1b57d6_hasScoped_false_optionsId_0_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_upload_vue__["staticRenderFns"],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
