@@ -87,6 +87,10 @@
             maxSize: {
                 type: Number
             },
+            maxConcurrentUploads: {
+                type: Number,
+                default: 3
+            },
             beforeUpload: Function,
             onProgress: {
                 type: Function,
@@ -155,7 +159,8 @@
                 dragOver: false,
                 fileList: [],
                 ajaxList: [],
-                tempIndex: 1
+                tempIndex: 1,
+                uploadQueue: []
             };
         },
         computed: {
@@ -244,6 +249,15 @@
                 });
                 if (num > 0) {
                     this.ajaxList = this.ajaxList.filter(item => item.uid !== uid);
+                    this.processQueue();
+                }
+                const queueLength = this.uploadQueue.length;
+                this.uploadQueue = this.uploadQueue.filter(item => item.uid !== uid);
+                if (queueLength !== this.uploadQueue.length) {
+                    const queuedFile = this.fileList.find(item => item.uid === uid);
+                    if (queuedFile) {
+                        this.handleRemove(queuedFile);
+                    }
                 }
                 return num;
             },
@@ -267,6 +281,23 @@
                 }
 
                 this.handleStart(file);
+                this.enqueueUpload(file);
+            },
+            getUploadLimit () {
+                if (typeof this.maxConcurrentUploads === 'number' && this.maxConcurrentUploads > 0) {
+                    return this.maxConcurrentUploads;
+                }
+                return Infinity;
+            },
+            enqueueUpload (file) {
+                const limit = this.getUploadLimit();
+                if (this.ajaxList.length >= limit) {
+                    this.uploadQueue.push(file);
+                } else {
+                    this.startUploadRequest(file);
+                }
+            },
+            startUploadRequest (file) {
                 let formData = new FormData();
                 formData.append(this.name, file);
 
@@ -284,28 +315,39 @@
                     dataJson = Object.assign(dataJson, file.ajaxExtraData);
                 }
 
+                const request = ajax({
+                    headers: this.headers,
+                    withCredentials: this.withCredentials,
+                    file: file,
+                    data: dataJson,
+                    filename: this.name,
+                    action: this.action,
+                    onProgress: e => {
+                        this.handleProgress(e, file);
+                    },
+                    onSuccess: res => {
+                        this.handleSuccess(res, file);
+                        this.ajaxList = this.ajaxList.filter(({ uid }) => uid !== file.uid);
+                        this.processQueue();
+                    },
+                    onError: (err, response) => {
+                        this.handleError(err, response, file);
+                        this.ajaxList = this.ajaxList.filter(({ uid }) => uid !== file.uid);
+                        this.processQueue();
+                    }
+                });
+
                 this.ajaxList.push({
                     uid: file.uid,
-                    request: ajax({
-                        headers: this.headers,
-                        withCredentials: this.withCredentials,
-                        file: file,
-                        data: dataJson,
-                        filename: this.name,
-                        action: this.action,
-                        onProgress: e => {
-                            this.handleProgress(e, file);
-                        },
-                        onSuccess: res => {
-                            this.handleSuccess(res, file);
-                            this.ajaxList = this.ajaxList.filter(({uid}) => uid !== file.uid);
-                        },
-                        onError: (err, response) => {
-                            this.handleError(err, response, file);
-                            this.ajaxList = this.ajaxList.filter(({uid}) => uid !== file.uid);
-                        }
-                    })
+                    request: request
                 });
+            },
+            processQueue () {
+                const limit = this.getUploadLimit();
+                while (this.uploadQueue.length && this.ajaxList.length < limit) {
+                    const nextFile = this.uploadQueue.shift();
+                    this.startUploadRequest(nextFile);
+                }
             },
             handleStart (file) {
                 file.uid = Date.now() + this.tempIndex++;
@@ -371,6 +413,7 @@
             },
             clearFiles() {
                 this.fileList = [];
+                this.uploadQueue = [];
             }
         },
         watch: {
