@@ -20,6 +20,8 @@ yarn publish
 
 // 使用 docker 发布
 docker run --rm -it -v $(pwd):/work -w /work --entrypoint=/bin/bash node:11.15.0
+export NPM_TOKEN=your_token_here
+echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
 yarn publish
 
 ```

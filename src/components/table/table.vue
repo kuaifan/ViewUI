@@ -1081,6 +1081,11 @@
                 if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
                 if (this.showSummary && this.$refs.summary) this.$refs.summary.$el.scrollLeft = event.target.scrollLeft;
                 this.hideColumnFilter();
+                this.$emit('on-scroll', {
+                    event,
+                    scrollLeft: event.target.scrollLeft,
+                    scrollTop: event.target.scrollTop
+                });
             },
             handleFixedMousewheel(event) {
                 let deltaY = event.deltaY;

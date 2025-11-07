@@ -152,6 +152,14 @@ export declare class Table extends Vue {
      */
     $emit(eventName: "on-filter-change", value: any): this;
     /**
+     * 表格内容区域滚动时触发
+     * { scrollLeft, scrollTop, event }
+     */
+    $emit(
+        eventName: "on-scroll",
+        params: { scrollLeft: number; scrollTop: number; event: Event }
+    ): this;
+    /**
      * 单击某一行时触发
      * currentRow：当前行的数据
      * index?: 当前行的索引
