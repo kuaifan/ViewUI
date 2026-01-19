@@ -64,6 +64,7 @@
                 ref="dropdown"
                 :data-transfer="transfer"
                 :transfer="transfer"
+                :z-index="zIndex"
                 v-transfer-dom
                 :eventsEnabled="eventsEnabled"
             >
@@ -340,6 +341,10 @@
             eventsEnabled: {
                 type: Boolean,
                 default: false
+            },
+            // 自定义 z-index
+            zIndex: {
+                type: Number
             }
         },
         mounted(){

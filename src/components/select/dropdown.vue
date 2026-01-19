@@ -26,6 +26,10 @@
             eventsEnabled: {
                 type: Boolean,
                 default: false
+            },
+            // 自定义 z-index
+            zIndex: {
+                type: Number
             }
         },
         data () {
@@ -41,7 +45,14 @@
                 let style = {};
                 if (this.width) style.minWidth = `${this.width}px`;
 
-                if (this.transfer) style['z-index'] = hasTransferIndex(this.tIndex, 1060 + this.tIndex);
+                if (this.transfer) {
+                    // 优先使用自定义 z-index
+                    if (typeof this.zIndex === 'number') {
+                        style['z-index'] = this.zIndex;
+                    } else {
+                        style['z-index'] = hasTransferIndex(this.tIndex, 1060 + this.tIndex);
+                    }
+                }
 
                 return style;
             }

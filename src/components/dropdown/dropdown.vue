@@ -16,6 +16,7 @@
                 :eventsEnabled="eventsEnabled"
                 :data-transfer="transfer"
                 :transfer="transfer"
+                :z-index="zIndex"
                 v-transfer-dom><slot name="list"></slot></Drop>
         </transition>
     </div>
@@ -73,6 +74,10 @@
             eventsEnabled: {
                 type: Boolean,
                 default: false
+            },
+            // 自定义 z-index
+            zIndex: {
+                type: Number
             }
         },
         computed: {
